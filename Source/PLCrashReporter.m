@@ -143,6 +143,23 @@ static void signal_handler_callback (int signal, siginfo_t *info, ucontext_t *ua
     /* Call any post-crash callback */
     if (crashCallbacks.handleSignal != NULL)
         crashCallbacks.handleSignal(info, uap, crashCallbacks.context);
+    
+    PLCrashReporter *reporter = [PLCrashReporter sharedReporter];
+    
+    NSError *errorLoadingReport = nil;
+    NSData *crashReport = [reporter loadPendingCrashReportDataAndReturnError:&errorLoadingReport];
+    
+    if (nil == crashReport)
+    {
+        NSLog(@"Warning: loading crash report failed = %@", errorLoadingReport);
+        return;
+    }
+    [reporter purgePendingCrashReport];
+    
+    if (reporter.delegate)
+    {
+        [reporter.delegate didGenerateCrashReport:crashReport reporter:reporter];
+    }
 }
 
 /**
