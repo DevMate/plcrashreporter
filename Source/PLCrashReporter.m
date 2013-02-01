@@ -40,6 +40,8 @@
 #import <dlfcn.h>
 #import <mach-o/dyld.h>
 
+#import <AppKit/AppKit.h>
+
 #define NSDEBUG(msg, args...) {\
     NSLog(@"[PLCrashReporter] " msg, ## args); \
 }
@@ -180,6 +182,21 @@ static void image_remove_callback (const struct mach_header *mh, intptr_t vmaddr
  * exception field, and triggering the signal handler.
  */
 static void uncaught_exception_handler (NSException *exception) {
+    
+    NSLog(@"Handling uncaught exception");
+	// ignore universal access exceptions
+	if ([[exception name] isEqual:NSAccessibilityException])
+	{
+		NSLog(@"Error: Ignored NSAccessibilityException");
+		return;
+	}
+    
+    // ignore SIMBL exceptions
+    if ([[exception reason] rangeOfString:@"SIMBL"].length) {
+        NSLog(@"Ignored exception: %@", [exception reason]);
+        return;
+    }
+    
     /* Set the uncaught exception */
     plcrash_log_writer_set_exception(&signal_handler_context.writer, exception);
     
