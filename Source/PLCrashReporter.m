@@ -182,9 +182,38 @@ static void image_remove_callback (const struct mach_header *mh, intptr_t vmaddr
 static void uncaught_exception_handler (NSException *exception) {
     /* Set the uncaught exception */
     plcrash_log_writer_set_exception(&signal_handler_context.writer, exception);
-
-    /* Synchronously trigger the crash handler */
-    abort();
+    
+    if (!pthread_main_np())
+    {
+        BOOL isSimpleThread = ([[[NSThread callStackSymbols] lastObject]
+                                rangeOfString:@"thread_start"].location != NSNotFound);
+        
+        if (isSimpleThread)
+		{
+            [NSThread exit];
+        }
+        else
+		{
+            [NSThread sleepUntilDate:[NSDate distantFuture]];
+        }
+    }
+    
+    dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+        PLCrashReporter *reporter = [PLCrashReporter sharedReporter];
+    
+        NSError *errorGeneratingLiveReport = nil;
+        NSData *exceptionReport = [reporter generateExceptionReportAndReturnError:&errorGeneratingLiveReport];
+    
+        if (nil == exceptionReport)
+        {
+            NSLog(@"Warning: error generating exception report = %@", exceptionReport);
+        }
+        else
+            if (reporter.delegate)
+            {
+                [reporter.delegate didGenerateExceptionReport:exceptionReport reporter:reporter];
+            }
+    });
 }
 
 
@@ -205,6 +234,8 @@ static void uncaught_exception_handler (NSException *exception) {
  * Shared application crash reporter.
  */
 @implementation PLCrashReporter
+
+@synthesize delegate;
 
 + (void) initialize {
     if (![[self class] isEqual: [PLCrashReporter class]])
@@ -338,12 +369,15 @@ static void uncaught_exception_handler (NSException *exception) {
     if (![[PLCrashSignalHandler sharedHandler] registerHandlerWithCallback: &signal_handler_callback context: &signal_handler_context error: outError])
         return NO;
 
-    /* Set the uncaught exception handler */
-    NSSetUncaughtExceptionHandler(&uncaught_exception_handler);
-
     /* Success */
     _enabled = YES;
     return YES;
+}
+
+- (void) enableHandlingUncaughtExceptions
+{
+    /* Set the uncaught exception handler */
+    NSSetUncaughtExceptionHandler(&uncaught_exception_handler);
 }
 
 /**
@@ -361,23 +395,10 @@ static void uncaught_exception_handler (NSException *exception) {
     return [self generateLiveReportWithThread: thread error: NULL];
 }
 
-
-/**
- * Generate a live crash report for a given @a thread, without triggering an actual crash condition.
- * This may be used to log current process state without actually crashing. The crash report data will be
- * returned on success.
- *
- * @param thread The thread which will be marked as the failing thread in the generated report.
- * @param outError A pointer to an NSError object variable. If an error occurs, this pointer
- * will contain an error object indicating why the crash report could not be generated or loaded. If no
- * error occurs, this parameter will be left unmodified. You may specify nil for this parameter, and no
- * error information will be provided.
- *
- * @return Returns nil if the crash report data could not be loaded.
- *
- */
-- (NSData *) generateLiveReportWithThread: (thread_t) thread error: (NSError **) outError {
-    plcrash_log_writer_t writer;
+- (NSData *) generateLiveReportWithThread: (thread_t) thread
+                                   writer: (plcrash_log_writer_t) writer
+                                    error: (NSError **) outError
+{
     plcrash_async_file_t file;
     
     /* Open the output file */
@@ -388,12 +409,11 @@ static void uncaught_exception_handler (NSException *exception) {
     if (fd < 0) {
         plcrash_populate_posix_error(outError, errno, NSLocalizedString(@"Failed to create temporary path", @"Error opening temporary output path"));
         free(path);
-
+        
         return nil;
     }
-
+    
     /* Initialize the output context */
-    plcrash_log_writer_init(&writer, _applicationIdentifier, _applicationVersion, true);
     plcrash_async_file_init(&file, fd, MAX_REPORT_BYTES);
     
     /* Mock up a SIGTRAP-based siginfo_t */
@@ -410,7 +430,7 @@ static void uncaught_exception_handler (NSException *exception) {
         plcrash_log_writer_write(&writer, thread, &shared_image_list, &file, &info, NULL);
     }
     plcrash_log_writer_close(&writer);
-
+    
     /* Finished -- clean up. */
     plcrash_async_file_flush(&file);
     plcrash_async_file_close(&file);
@@ -429,9 +449,32 @@ static void uncaught_exception_handler (NSException *exception) {
         /* This shouldn't fail, but if it does, there's no use in returning nil */
         NSLog(@"Failure occured deleting live crash report: %s", strerror(errno));
     }
-
+    
     free(path);
     return data;
+}
+
+/**
+ * Generate a live crash report for a given @a thread, without triggering an actual crash condition.
+ * This may be used to log current process state without actually crashing. The crash report data will be
+ * returned on success.
+ *
+ * @param thread The thread which will be marked as the failing thread in the generated report.
+ * @param outError A pointer to an NSError object variable. If an error occurs, this pointer
+ * will contain an error object indicating why the crash report could not be generated or loaded. If no
+ * error occurs, this parameter will be left unmodified. You may specify nil for this parameter, and no
+ * error information will be provided.
+ * @param writer
+ *
+ * @return Returns nil if the crash report data could not be loaded.
+ *
+ */
+
+- (NSData *) generateLiveReportWithThread: (thread_t) thread error: (NSError **) outError {
+    plcrash_log_writer_t writer;
+    plcrash_log_writer_init(&writer, _applicationIdentifier, _applicationVersion, true);
+    
+    return [self generateLiveReportWithThread:thread writer:writer error:outError];
 }
 
 
@@ -463,6 +506,19 @@ static void uncaught_exception_handler (NSException *exception) {
     return [self generateLiveReportWithThread: mach_thread_self() error: outError];
 }
 
+- (NSData *) generateExceptionReport
+{
+    return [self generateLiveReportWithThread: mach_thread_self()
+                                       writer: signal_handler_context.writer
+                                        error: NULL];
+}
+
+- (NSData *) generateExceptionReportAndReturnError:(NSError **) outError
+{
+    return [self generateLiveReportWithThread: mach_thread_self()
+                                       writer:signal_handler_context.writer
+                                        error:outError];
+}
 
 /**
  * Set the callbacks that will be executed by the receiver after a crash has occured and been recorded by PLCrashReporter.

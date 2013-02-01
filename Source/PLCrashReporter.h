@@ -29,6 +29,16 @@
 #import <Foundation/Foundation.h>
 #import <mach/mach.h>
 
+@class PLCrashReporter;
+
+@protocol PLCrashReporterDelegate <NSObject>
+
+@required
+- (void)didGenerateCrashReport:(NSData *)crashReport reporter:(PLCrashReporter *)reporter;
+- (void)didGenerateExceptionReport:(NSData *)exceptionReport reporter:(PLCrashReporter *)reporter;
+
+@end
+
 /**
  * @ingroup functions
  *
@@ -66,6 +76,9 @@ typedef struct PLCrashReporterCallbacks {
 } PLCrashReporterCallbacks;
 
 @interface PLCrashReporter : NSObject {
+    
+    id<PLCrashReporterDelegate> delegate;
+    
 @private
     /** YES if the crash reporter has been enabled */
     BOOL _enabled;
@@ -82,6 +95,8 @@ typedef struct PLCrashReporterCallbacks {
 
 + (PLCrashReporter *) sharedReporter;
 
+@property (assign) id<PLCrashReporterDelegate> delegate;
+
 - (BOOL) hasPendingCrashReport;
 
 - (NSData *) loadPendingCrashReportData;
@@ -93,11 +108,16 @@ typedef struct PLCrashReporterCallbacks {
 - (NSData *) generateLiveReport;
 - (NSData *) generateLiveReportAndReturnError: (NSError **) outError;
 
+- (NSData *) generateExceptionReport;
+- (NSData *) generateExceptionReportAndReturnError:(NSError **) outError;
+
 - (BOOL) purgePendingCrashReport;
 - (BOOL) purgePendingCrashReportAndReturnError: (NSError **) outError;
 
 - (BOOL) enableCrashReporter;
 - (BOOL) enableCrashReporterAndReturnError: (NSError **) outError;
+
+- (void) enableHandlingUncaughtExceptions;
 
 - (void) setCrashCallbacks: (PLCrashReporterCallbacks *) callbacks;
 
