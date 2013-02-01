@@ -48,9 +48,94 @@
 #import <dlfcn.h>
 #import <mach-o/dyld.h>
 
+#import <AppKit/NSErrors.h>
+
 #define NSDEBUG(msg, args...) {\
     NSLog(@"[PLCrashReporter] " msg, ## args); \
 }
+
+@interface _PLCrashReporterStorage : NSObject
+
++ (void)addCrashReporter:(PLCrashReporter *)reporter;
++ (void)removeCrashReporter:(PLCrashReporter *)reporter;
+
+@end
+
+@implementation _PLCrashReporterStorage
+
++ (NSMutableSet *)storageContainer
+{
+    static NSMutableSet *sStorageContainer = nil;
+    static dispatch_once_t onceToken;
+    dispatch_once(&onceToken, ^{
+        sStorageContainer = [[NSMutableSet alloc] init];
+    });
+    
+    return sStorageContainer;
+}
+
++ (void)addCrashReporter:(PLCrashReporter *)reporter
+{
+    if (nil == reporter)
+        return;
+    
+    @synchronized ([self storageContainer])
+    {
+        [[self storageContainer] addObject:reporter];
+    }
+}
+
++ (void)removeCrashReporter:(PLCrashReporter *)reporter
+{
+    if (nil == reporter)
+        return;
+    
+    @synchronized ([self storageContainer])
+    {
+        [[self storageContainer] removeObject:reporter];
+    }
+}
+
+struct _PLHandledCrashReport
+{
+    PLReportType type;
+    NSException *exception; // nil for crash reports
+};
+
++ (void)notifyCrashReportersWithHandledReport:(struct _PLHandledCrashReport)handledReport
+{
+    @synchronized ([self storageContainer])
+    {
+        for (PLCrashReporter *reporter in [self storageContainer])
+        {
+            NSError *internalError = nil;
+            NSData *reportData = nil;
+
+            if (PLReportTypeCrash == handledReport.type)
+            {
+                reportData = [reporter loadPendingCrashReportDataAndReturnError:&internalError];
+                [reporter purgePendingCrashReport];
+            }
+            else if (PLReportTypeException == handledReport.type)
+            {
+                reportData = [reporter generateExceptionReport:handledReport.exception error:&internalError];
+            }
+            
+            if (nil != internalError &&
+                [reporter.delegate respondsToSelector:@selector(reporter:didFailGenerateReportOfType:withError:)])
+            {
+                [reporter.delegate reporter:reporter didFailGenerateReportOfType:handledReport.type withError:internalError];
+            }
+            else if (0 != [reportData length] &&
+                     [reporter.delegate respondsToSelector:@selector(reporter:didGenerateReport:ofType:)])
+            {
+                [reporter.delegate reporter:reporter didGenerateReport:reportData ofType:handledReport.type];
+            }
+        }
+    }
+}
+
+@end
 
 /** @internal
  * CrashReporter cache directory name. */
@@ -239,6 +324,9 @@ static bool signal_handler_callback (int signal, siginfo_t *info, pl_ucontext_t 
     if (crashCallbacks.handleSignal != NULL)
         crashCallbacks.handleSignal(info, uap, crashCallbacks.context);
     
+    struct _PLHandledCrashReport handledReport = { .type = PLReportTypeCrash, .exception = nil };
+    [_PLCrashReporterStorage notifyCrashReportersWithHandledReport:handledReport];
+    
     return false;
 }
 
@@ -358,11 +446,52 @@ static void image_remove_callback (const struct mach_header *mh, intptr_t vmaddr
  * exception field, and triggering the signal handler.
  */
 static void uncaught_exception_handler (NSException *exception) {
-    /* Set the uncaught exception */
-    plcrash_log_writer_set_exception(&signal_handler_context.writer, exception);
     
-    /* Synchronously trigger the crash handler */
-    abort();
+    NSLog(@"Handling uncaught exception");
+    // ignore universal access exceptions
+    if ([[exception name] isEqual:NSAccessibilityException])
+    {
+        NSLog(@"Error: Ignored NSAccessibilityException");
+        return;
+    }
+    
+    // ignore SIMBL exceptions
+    if ([[exception reason] rangeOfString:@"SIMBL"].length)
+    {
+        NSLog(@"Ignored exception: %@", [exception reason]);
+        return;
+    }
+
+    dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+        struct _PLHandledCrashReport reportResult = { .type = PLReportTypeException, .exception = exception};
+        [_PLCrashReporterStorage notifyCrashReportersWithHandledReport:reportResult];
+    });
+
+    // Cocoa's default behaviour here depends on the current thread.
+    // For non-main threads, Cocoa will terminate the process.
+    // For the main thread, it will not.
+    // When an exception occurs, the process' internal state is likely
+    // inconsistent/corrupt, so (in one school of thought) it's best
+    // to kill the process.  On non-main threads, we don't intervene
+    // and allow Cocoa to do so.  On the main thread however, we display
+    // our 'exception occured' UI because if we killed the process with
+    // abort(), the backtrace would be from here, not from where the
+    // exception actually occured.
+    if (!pthread_main_np())
+    {
+        // We can't exit dispatch queue, so we make it sleep forever.
+        BOOL isSimpleThread = ([[[NSThread callStackSymbols] lastObject]
+                                rangeOfString:@"thread_start"].location != NSNotFound);
+        
+        if (isSimpleThread)
+        {
+            [NSThread exit];
+        }
+        else
+        {
+            [NSThread sleepUntilDate:[NSDate distantFuture]];
+        }
+    }
 }
 
 
@@ -392,6 +521,8 @@ static void uncaught_exception_handler (NSException *exception) {
  * A PLCrashReporter instance manages process-wide handling of crashes.
  */
 @implementation PLCrashReporter
+
+@synthesize delegate;
 
 + (void) initialize {
     if (![[self class] isEqual: [PLCrashReporter class]])
@@ -686,78 +817,89 @@ static plcrash_error_t plcr_live_report_callback (plcrash_async_thread_state_t *
  */
 - (NSData *) generateLiveReportWithThread: (thread_t) thread error: (NSError **) outError {
     plcrash_log_writer_t writer;
-    plcrash_async_file_t file;
-    plcrash_error_t err;
-
-    /* Open the output file */
-    NSString *templateStr = [NSTemporaryDirectory() stringByAppendingPathComponent: @"live_crash_report.XXXXXX"];
-    char *path = strdup([templateStr fileSystemRepresentation]);
-    
-    int fd = mkstemp(path);
-    if (fd < 0) {
-        plcrash_populate_posix_error(outError, errno, NSLocalizedString(@"Failed to create temporary path", @"Error opening temporary output path"));
-        free(path);
-
-        return nil;
-    }
-
-    /* Initialize the output context */
     plcrash_log_writer_init(&writer, _applicationIdentifier, _applicationVersion, [self mapToAsyncSymbolicationStrategy: _config.symbolicationStrategy], true);
-    plcrash_async_file_init(&file, fd, MAX_REPORT_BYTES);
     
-    /* Mock up a SIGTRAP-based signal info */
-    plcrash_log_bsd_signal_info_t bsd_signal_info;
-    plcrash_log_signal_info_t signal_info;
-    bsd_signal_info.signo = SIGTRAP;
-    bsd_signal_info.code = TRAP_TRACE;
-    bsd_signal_info.address = __builtin_return_address(0);
+    return [self generateLiveReportWithThread:thread writer:writer error:outError];
+}
 
-    signal_info.bsd_info = &bsd_signal_info;
-    signal_info.mach_info = NULL;
+- (NSData *) generateLiveReportWithThread: (thread_t) thread writer: (plcrash_log_writer_t) writer error: (NSError **) outError {
+    NSData *data = nil;
+    @synchronized (self)
+    {
+        plcrash_async_file_t file;
+        plcrash_error_t err;
+
+        /* Open the output file */
+        NSString *templateStr = [NSTemporaryDirectory() stringByAppendingPathComponent: @"live_crash_report.XXXXXX"];
+        char *path = strdup([templateStr fileSystemRepresentation]);
+        
+        int fd = mkstemp(path);
+        if (fd < 0) {
+            plcrash_populate_posix_error(outError, errno, NSLocalizedString(@"Failed to create temporary path", @"Error opening temporary output path"));
+            free(path);
+            goto exitdoor;
+        }
+
+        /* Initialize the output context */
+        plcrash_async_file_init(&file, fd, MAX_REPORT_BYTES);
+        
+        /* Mock up a SIGTRAP-based signal info */
+        plcrash_log_bsd_signal_info_t bsd_signal_info;
+        plcrash_log_signal_info_t signal_info;
+        bsd_signal_info.signo = SIGTRAP;
+        bsd_signal_info.code = TRAP_TRACE;
+        bsd_signal_info.address = __builtin_return_address(0);
+
+        signal_info.bsd_info = &bsd_signal_info;
+        signal_info.mach_info = NULL;
+        
+        /* Write the crash log using the already-initialized writer */
+        if (thread == pl_mach_thread_self()) {
+            struct plcr_live_report_context ctx = {
+                .writer = &writer,
+                .file = &file,
+                .info = &signal_info
+            };
+            err = plcrash_async_thread_state_current(plcr_live_report_callback, &ctx);
+        } else {
+            err = plcrash_log_writer_write(&writer, thread, &shared_image_list, &file, &signal_info, NULL);
+        }
+        plcrash_log_writer_close(&writer);
+
+        /* Flush the data */
+        plcrash_async_file_flush(&file);
+        plcrash_async_file_close(&file);
+
+        /* Check for write failure */
+        if (err != PLCRASH_ESUCCESS) {
+            NSLog(@"Write failed with error %s", plcrash_async_strerror(err));
+            plcrash_populate_error(outError, PLCrashReporterErrorUnknown, @"Failed to write the crash report to disk", nil);
+            data = nil;
+            goto cleanup;
+        }
+
+        data = [NSData dataWithContentsOfFile: [NSString stringWithUTF8String: path]];
+        if (data == nil) {
+            /* This should only happen if our data is deleted out from under us */
+            plcrash_populate_error(outError, PLCrashReporterErrorUnknown, NSLocalizedString(@"Unable to open live crash report for reading", nil), nil);
+            goto cleanup;
+        }
+
+    cleanup:
+        /* Finished -- clean up. */
+        plcrash_log_writer_free(&writer);
+
+        if (unlink(path) != 0) {
+            /* This shouldn't fail, but if it does, there's no use in returning nil */
+            NSLog(@"Failure occured deleting live crash report: %s", strerror(errno));
+        }
+
+        free(path);
+        
+    exitdoor:
+        ;
+    }
     
-    /* Write the crash log using the already-initialized writer */
-    if (thread == pl_mach_thread_self()) {
-        struct plcr_live_report_context ctx = {
-            .writer = &writer,
-            .file = &file,
-            .info = &signal_info
-        };
-        err = plcrash_async_thread_state_current(plcr_live_report_callback, &ctx);
-    } else {
-        err = plcrash_log_writer_write(&writer, thread, &shared_image_list, &file, &signal_info, NULL);
-    }
-    plcrash_log_writer_close(&writer);
-
-    /* Flush the data */
-    plcrash_async_file_flush(&file);
-    plcrash_async_file_close(&file);
-
-    /* Check for write failure */
-    NSData *data;
-    if (err != PLCRASH_ESUCCESS) {
-        NSLog(@"Write failed with error %s", plcrash_async_strerror(err));
-        plcrash_populate_error(outError, PLCrashReporterErrorUnknown, @"Failed to write the crash report to disk", nil);
-        data = nil;
-        goto cleanup;
-    }
-
-    data = [NSData dataWithContentsOfFile: [NSString stringWithUTF8String: path]];
-    if (data == nil) {
-        /* This should only happen if our data is deleted out from under us */
-        plcrash_populate_error(outError, PLCrashReporterErrorUnknown, NSLocalizedString(@"Unable to open live crash report for reading", nil), nil);
-        goto cleanup;
-    }
-
-cleanup:
-    /* Finished -- clean up. */
-    plcrash_log_writer_free(&writer);
-
-    if (unlink(path) != 0) {
-        /* This shouldn't fail, but if it does, there's no use in returning nil */
-        NSLog(@"Failure occured deleting live crash report: %s", strerror(errno));
-    }
-
-    free(path);
     return data;
 }
 
@@ -789,6 +931,18 @@ cleanup:
 - (NSData *) generateLiveReportAndReturnError: (NSError **) outError {
     return [self generateLiveReportWithThread: pl_mach_thread_self() error: outError];
 }
+
+- (NSData *) generateExceptionReport: (NSException *) exception error: (NSError **) outError
+{
+    plcrash_log_writer_t writer;
+    plcrash_log_writer_init(&writer, _applicationIdentifier, _applicationVersion, [self mapToAsyncSymbolicationStrategy: _config.symbolicationStrategy], true);
+    plcrash_log_writer_set_exception(&writer, exception);
+    
+    return [self generateLiveReportWithThread: pl_mach_thread_self()
+                                       writer: writer
+                                        error: outError];
+}
+
 
 /**
  * Set the callbacks that will be executed by the receiver after a crash has occured and been recorded by PLCrashReporter.
@@ -855,6 +1009,8 @@ cleanup:
     NSArray *paths = NSSearchPathForDirectoriesInDomains(NSCachesDirectory, NSUserDomainMask, YES);
     NSString *cacheDir = [paths objectAtIndex: 0];
     _crashReportDirectory = [[[cacheDir stringByAppendingPathComponent: PLCRASH_CACHE_DIR] stringByAppendingPathComponent: appIdPath] retain];
+    
+    [_PLCrashReporterStorage addCrashReporter:self];
     
     return self;
 }
@@ -967,6 +1123,22 @@ cleanup:
 }
 
 #endif /* PLCRASH_FEATURE_MACH_EXCEPTIONS */
+
+- (NSUInteger) retainCount
+{
+    if (self == sharedReporter)
+        return NSUIntegerMax;
+    
+    return [super retainCount];
+}
+
+- (oneway void) release
+{
+    if (2 == [self retainCount]) // 1 ref will be removed right now and 1 ref at Storage
+        [_PLCrashReporterStorage removeCrashReporter:self];
+    
+    [super release];
+}
 
 - (void) dealloc {
     [_config release];

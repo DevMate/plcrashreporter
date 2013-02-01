@@ -256,7 +256,7 @@ static NSString *uuidSeparator = @"-";
         {
             [text appendFormat: @"Framework Version: %@\n", reporterVersion];
         }
-        [text appendFormat: @"Report Version:    %@\n", REPORT_VERSION];
+        [text appendFormat: @"Report Version:    106\n"];
     }
 
     [text appendString: @"\n"];

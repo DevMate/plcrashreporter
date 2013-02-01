@@ -128,9 +128,7 @@ typedef struct PLCrashReporterCallbacks {
 - (NSData *) generateLiveReport;
 - (NSData *) generateLiveReportAndReturnError: (NSError **) outError;
 
-- (NSData *) generateExceptionReport;
-- (NSData *) generateExceptionReportAndReturnError:(NSError **) outError;
-- (NSData *) generateExceptionReport:(NSException *)exception error:(NSError **)outError;
+- (NSData *) generateExceptionReport: (NSException *) exception error: (NSError **) outError;
 
 - (BOOL) purgePendingCrashReport;
 - (BOOL) purgePendingCrashReportAndReturnError: (NSError **) outError;
@@ -138,18 +136,19 @@ typedef struct PLCrashReporterCallbacks {
 - (BOOL) enableCrashReporter;
 - (BOOL) enableCrashReporterAndReturnError: (NSError **) outError;
 
-- (void) enableHandlingUncaughtExceptions;
-
 - (void) setCrashCallbacks: (PLCrashReporterCallbacks *) callbacks;
 @end
+
+typedef NS_ENUM(NSUInteger, PLReportType)
+{
+    PLReportTypeCrash = 0,
+    PLReportTypeException
+};
 
 @protocol PLCrashReporterDelegate <NSObject>
 @optional
 
-- (void)didGenerateCrashReport:(NSData *)crashReport reporter:(PLCrashReporter *)reporter;
-- (void)didGenerateExceptionReport:(NSData *)exceptionReport reporter:(PLCrashReporter *)reporter;
-
-- (void)didFailedGenerateCrashReport:(NSError *)error reporter:(PLCrashReporter *)report;
-- (void)didFailedGenerateExceptionReport:(NSError *)error reporter:(PLCrashReporter *)report;
+- (void)reporter:(PLCrashReporter *)reporter didGenerateReport:(NSData *)report ofType:(PLReportType)reportType;
+- (void)reporter:(PLCrashReporter *)reporter didFailGenerateReportOfType:(PLReportType)reportType withError:(NSError *)error;
 
 @end
