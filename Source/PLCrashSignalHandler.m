@@ -94,7 +94,7 @@ static void fatal_signal_handler (int signal, siginfo_t *info, void *uapVoid) {
         struct sigaction sa;
         
         memset(&sa, 0, sizeof(sa));
-        sa.sa_handler = SIG_DFL;
+        sa.sa_handler = SIG_IGN;
         sigemptyset(&sa.sa_mask);
         
         sigaction(fatal_signals[i], &sa, NULL);
@@ -103,6 +103,14 @@ static void fatal_signal_handler (int signal, siginfo_t *info, void *uapVoid) {
     /* Call the callback handler */
     if (SharedHandlerContext.crashCallback != NULL)
         SharedHandlerContext.crashCallback(signal, info, uapVoid, SharedHandlerContext.crashCallbackContext);
+    
+    struct sigaction sa;
+    
+    memset(&sa, 0, sizeof(sa));
+    sa.sa_handler = SIG_IGN;
+    sigemptyset(&sa.sa_mask);
+    
+    sigaction(signal, &sa, NULL);
     
     /* Re-raise the signal */
     raise(signal);
