@@ -110,6 +110,7 @@ typedef struct PLCrashReporterCallbacks {
 
 - (NSData *) generateExceptionReport;
 - (NSData *) generateExceptionReportAndReturnError:(NSError **) outError;
+- (NSData *) generateExceptionReport:(NSException *)exception error:(NSError **)outError;
 
 - (BOOL) purgePendingCrashReport;
 - (BOOL) purgePendingCrashReportAndReturnError: (NSError **) outError;

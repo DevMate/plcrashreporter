@@ -45,7 +45,7 @@ static int fatal_signals[] = {
     SIGFPE,
     SIGILL,
     SIGSEGV,
-    //SIGTRAP
+    SIGTRAP
 };
 
 /** @internal

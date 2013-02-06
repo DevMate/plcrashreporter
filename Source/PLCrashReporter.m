@@ -214,8 +214,23 @@ static void uncaught_exception_handler (NSException *exception) {
         return;
     }
     
-    /* Set the uncaught exception */
-    plcrash_log_writer_set_exception(&signal_handler_context.writer, exception);
+    PLCrashReporter *reporter = [PLCrashReporter sharedReporter];
+        
+    NSError *errorGeneratingLiveReport = nil;
+    NSData *exceptionReport = [reporter generateExceptionReport:exception
+                                                          error:&errorGeneratingLiveReport];
+    
+    if (nil == exceptionReport)
+    {
+        NSLog(@"Warning: error generating exception report = %@", exceptionReport);
+    }
+    else
+        if (reporter.delegate)
+        {
+            dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_BACKGROUND, 0), ^{
+                [reporter.delegate didGenerateExceptionReport:exceptionReport reporter:reporter];
+            });
+        }
     
     if (!pthread_main_np())
     {
@@ -231,23 +246,6 @@ static void uncaught_exception_handler (NSException *exception) {
             [NSThread sleepUntilDate:[NSDate distantFuture]];
         }
     }
-    
-    dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
-        PLCrashReporter *reporter = [PLCrashReporter sharedReporter];
-    
-        NSError *errorGeneratingLiveReport = nil;
-        NSData *exceptionReport = [reporter generateExceptionReportAndReturnError:&errorGeneratingLiveReport];
-    
-        if (nil == exceptionReport)
-        {
-            NSLog(@"Warning: error generating exception report = %@", exceptionReport);
-        }
-        else
-            if (reporter.delegate)
-            {
-                [reporter.delegate didGenerateExceptionReport:exceptionReport reporter:reporter];
-            }
-    });
 }
 
 
@@ -551,6 +549,17 @@ static void uncaught_exception_handler (NSException *exception) {
 {
     return [self generateLiveReportWithThread: mach_thread_self()
                                        writer:signal_handler_context.writer
+                                        error:outError];
+}
+
+- (NSData *)generateExceptionReport:(NSException *)exception error:(NSError **)outError
+{
+    plcrash_log_writer_t exception_writer;
+    plcrash_log_writer_init(&exception_writer, _applicationIdentifier, _applicationVersion, true);
+    plcrash_log_writer_set_exception(&exception_writer, exception);
+    
+    return [self generateLiveReportWithThread:mach_thread_self()
+                                       writer:exception_writer
                                         error:outError];
 }
 
