@@ -214,23 +214,23 @@ static void uncaught_exception_handler (NSException *exception) {
         return;
     }
     
-    PLCrashReporter *reporter = [PLCrashReporter sharedReporter];
+    dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_BACKGROUND, 0), ^{
+        PLCrashReporter *reporter = [PLCrashReporter sharedReporter];
         
-    NSError *errorGeneratingLiveReport = nil;
-    NSData *exceptionReport = [reporter generateExceptionReport:exception
-                                                          error:&errorGeneratingLiveReport];
+        NSError *errorGeneratingLiveReport = nil;
+        NSData *exceptionReport = [reporter generateExceptionReport:exception
+                                                              error:&errorGeneratingLiveReport];
     
-    if (nil == exceptionReport)
-    {
-        NSLog(@"Warning: error generating exception report = %@", exceptionReport);
-    }
-    else
-        if (reporter.delegate)
+        if (nil == exceptionReport)
         {
-            dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_BACKGROUND, 0), ^{
-                [reporter.delegate didGenerateExceptionReport:exceptionReport reporter:reporter];
-            });
+            NSLog(@"Warning: error generating exception report = %@", exceptionReport);
         }
+        else
+            if (reporter.delegate)
+            {
+                [reporter.delegate didGenerateExceptionReport:exceptionReport reporter:reporter];
+            }
+    });
     
     if (!pthread_main_np())
     {
