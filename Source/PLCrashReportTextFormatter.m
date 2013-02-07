@@ -232,7 +232,7 @@ NSInteger binaryImageSort(id binary1, id binary2, void *context);
     [text appendFormat: @"Exception Codes: %@ at 0x%" PRIx64 "\n", report.signalInfo.code, report.signalInfo.address];
     
     for (PLCrashReportThreadInfo *thread in report.threads) {
-        if (thread.crashed) {
+        if (thread.crashed && !report.hasExceptionInfo) {
             [text appendFormat: @"Crashed Thread:  %ld\n", (long) thread.threadNumber];
             break;
         }
@@ -269,7 +269,7 @@ NSInteger binaryImageSort(id binary1, id binary2, void *context);
     PLCrashReportThreadInfo *crashed_thread = nil;
     NSInteger maxThreadNum = 0;
     for (PLCrashReportThreadInfo *thread in report.threads) {
-        if (thread.crashed) {
+        if (thread.crashed && !report.hasExceptionInfo) {
             [text appendFormat: @"Thread %ld Crashed:\n", (long) thread.threadNumber];
             crashed_thread = thread;
         } else {
