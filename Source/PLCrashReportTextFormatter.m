@@ -33,6 +33,8 @@
 
 #import "PLCrashReportTextFormatter.h"
 
+#define REPORT_VERSION @"105"
+
 /*
  * XXX: The ARM_V7S Mach-O CPU subtype is not defined in the Mac OS X 10.8
  * headers.
@@ -222,7 +224,7 @@ NSInteger binaryImageSort(id binary1, id binary2, void *context);
         
         [text appendFormat: @"Date/Time:       %@\n", report.systemInfo.timestamp];
         [text appendFormat: @"OS Version:      %@ %@ (%@)\n", osName, report.systemInfo.operatingSystemVersion, osBuild];
-        [text appendFormat: @"Report Version:  104\n"];        
+        [text appendFormat: @"Report Version:  %@\n", REPORT_VERSION];
     }
 
     [text appendString: @"\n"];
@@ -456,7 +458,20 @@ NSInteger binaryImageSort(id binary1, id binary2, void *context);
     
     PLCrashReportBinaryImageInfo *imageInfo = [report imageForAddress: frameInfo.instructionPointer];
     if (imageInfo != nil) {
-        imageName = [imageInfo.imageName lastPathComponent];
+        
+        NSString *possibleBundlePath = [[[imageInfo.imageName stringByDeletingLastPathComponent]
+                                       stringByDeletingLastPathComponent] stringByDeletingLastPathComponent];
+        NSBundle *imageBundle = [NSBundle bundleWithPath:possibleBundlePath];
+        
+        if (nil == imageBundle || nil == imageBundle.bundleIdentifier)
+        {
+            imageName = [imageInfo.imageName lastPathComponent];
+        }
+        else
+        {
+            imageName = [imageBundle.bundleIdentifier copy];
+        }
+        
         baseAddress = imageInfo.imageBaseAddress;
         pcOffset = frameInfo.instructionPointer - imageInfo.imageBaseAddress;
     }
