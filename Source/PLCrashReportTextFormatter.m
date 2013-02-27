@@ -179,11 +179,7 @@ NSInteger binaryImageSort(id binary1, id binary2, void *context);
         NSString *hardwareModel = @"???";
         if (report.hasMachineInfo && report.machineInfo.modelName != nil)
             hardwareModel = report.machineInfo.modelName;
-       
-        if (reporterVersion)
-        {
-            [text appendFormat:@"Reporter Version: %@\n", reporterVersion];
-        }
+
         //[text appendFormat: @"Incident Identifier: TODO\n"];
         //[text appendFormat: @"CrashReporter Key:   TODO\n"];
         [text appendFormat: @"Hardware Model:      %@\n", hardwareModel];
@@ -236,9 +232,13 @@ NSInteger binaryImageSort(id binary1, id binary2, void *context);
         if (report.systemInfo.operatingSystemBuild != nil)
             osBuild = report.systemInfo.operatingSystemBuild;
         
-        [text appendFormat: @"Date/Time:       %@\n", report.systemInfo.timestamp];
-        [text appendFormat: @"OS Version:      %@ %@ (%@)\n", osName, report.systemInfo.operatingSystemVersion, osBuild];
-        [text appendFormat: @"Report Version:  %@\n", REPORT_VERSION];
+        [text appendFormat: @"Date/Time:         %@\n", report.systemInfo.timestamp];
+        [text appendFormat: @"OS Version:        %@ %@ (%@)\n", osName, report.systemInfo.operatingSystemVersion, osBuild];
+        if (reporterVersion)
+        {
+            [text appendFormat: @"Framework Version: %@\n", reporterVersion];
+        }
+        [text appendFormat: @"Report Version:    %@\n", REPORT_VERSION];
     }
 
     [text appendString: @"\n"];
