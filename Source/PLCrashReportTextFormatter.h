@@ -56,6 +56,9 @@ typedef enum {
 }
 
 + (NSString *) stringValueForCrashReport: (PLCrashReport *) report withTextFormat: (PLCrashReportTextFormat) textFormat;
++ (NSString *) stringValueForCrashReport: (PLCrashReport *) report
+                          withTextFormat: (PLCrashReportTextFormat) textFormat
+                         reporterVersion: (NSString *) reporterVersion;
 
 - (id) initWithTextFormat: (PLCrashReportTextFormat) textFormat stringEncoding: (NSStringEncoding) stringEncoding;
 

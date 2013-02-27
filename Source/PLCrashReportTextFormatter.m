@@ -70,7 +70,17 @@ NSInteger binaryImageSort(id binary1, id binary2, void *context);
  *
  * @return Returns the formatted result on success, or nil if an error occurs.
  */
-+ (NSString *) stringValueForCrashReport: (PLCrashReport *) report withTextFormat: (PLCrashReportTextFormat) textFormat {
++ (NSString *) stringValueForCrashReport: (PLCrashReport *) report withTextFormat: (PLCrashReportTextFormat) textFormat
+{
+    return [PLCrashReportTextFormatter stringValueForCrashReport:report
+                                                  withTextFormat:textFormat
+                                                 reporterVersion:nil];
+}
+
++ (NSString *) stringValueForCrashReport: (PLCrashReport *) report
+                          withTextFormat: (PLCrashReportTextFormat) textFormat
+                         reporterVersion: (NSString *)reporterVersion
+{
 	NSMutableString* text = [NSMutableString string];
 	boolean_t lp64 = true; // quiesce GCC uninitialized value warning
 
@@ -169,9 +179,13 @@ NSInteger binaryImageSort(id binary1, id binary2, void *context);
         NSString *hardwareModel = @"???";
         if (report.hasMachineInfo && report.machineInfo.modelName != nil)
             hardwareModel = report.machineInfo.modelName;
-
-        [text appendFormat: @"Incident Identifier: TODO\n"];
-        [text appendFormat: @"CrashReporter Key:   TODO\n"];
+       
+        if (reporterVersion)
+        {
+            [text appendFormat:@"Reporter Version: %@\n", reporterVersion];
+        }
+        //[text appendFormat: @"Incident Identifier: TODO\n"];
+        //[text appendFormat: @"CrashReporter Key:   TODO\n"];
         [text appendFormat: @"Hardware Model:      %@\n", hardwareModel];
     }
     
