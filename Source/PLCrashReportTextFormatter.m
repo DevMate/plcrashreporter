@@ -430,8 +430,9 @@ static NSString *uuidSeparator = @"-";
 
         NSString *binaryName = nil;
         
-        NSString *possibleBundlePath = [[[imageInfo.imageName stringByDeletingLastPathComponent]
-                                         stringByDeletingLastPathComponent] stringByDeletingLastPathComponent];
+        NSURL *imageURL = [NSURL fileURLWithPath:imageInfo.imageName];
+        NSString *possibleBundlePath = [[[[imageURL URLByDeletingLastPathComponent]
+                                         URLByDeletingLastPathComponent] URLByDeletingLastPathComponent] path];
         
         NSBundle *imageBundle = [NSBundle bundleWithPath:possibleBundlePath];
         
@@ -510,8 +511,10 @@ static NSString *uuidSeparator = @"-";
     PLCrashReportBinaryImageInfo *imageInfo = [report imageForAddress: frameInfo.instructionPointer];
     if (imageInfo != nil) {
         
-        NSString *possibleBundlePath = [[[imageInfo.imageName stringByDeletingLastPathComponent]
-                                       stringByDeletingLastPathComponent] stringByDeletingLastPathComponent];
+        NSURL *imageURL = [NSURL fileURLWithPath:imageInfo.imageName];
+        NSString *possibleBundlePath = [[[[imageURL URLByDeletingLastPathComponent]
+                                          URLByDeletingLastPathComponent] URLByDeletingLastPathComponent] path];
+        
         NSBundle *imageBundle = [NSBundle bundleWithPath:possibleBundlePath];
         
         if (nil == imageBundle || nil == imageBundle.bundleIdentifier)
