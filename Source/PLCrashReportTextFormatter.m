@@ -33,7 +33,7 @@
 
 #import "PLCrashReportTextFormatter.h"
 
-#define REPORT_VERSION @"105"
+#define REPORT_VERSION @"106"
 
 /*
  * XXX: The ARM_V7S Mach-O CPU subtype is not defined in the Mac OS X 10.8
@@ -60,6 +60,11 @@ NSInteger binaryImageSort(id binary1, id binary2, void *context);
  */
 @implementation PLCrashReportTextFormatter
 
+static const NSUInteger uuidSeparatorStartIndex = 8;
+static const NSUInteger uuidSeparatorCount = 4;
+static const NSUInteger uuidSeparatorIndexDelta = 5;
+
+static NSString *uuidSeparator = @"-";
 
 /**
  * Formats the provided @a report as human-readable text in the given @a textFormat, and return
@@ -347,7 +352,23 @@ NSInteger binaryImageSort(id binary1, id binary2, void *context);
         NSString *uuid;
         /* Fetch the UUID if it exists */
         if (imageInfo.hasImageUUID)
-            uuid = imageInfo.imageUUID;
+        {
+            //uuid = imageInfo.imageUUID;
+            NSMutableString *standardizedUUID = [NSMutableString stringWithString:[imageInfo.imageUUID uppercaseString]];
+            
+            for (NSUInteger i = 0; i < uuidSeparatorCount; ++i)
+            {
+                NSUInteger insertionIndex = uuidSeparatorStartIndex + i * uuidSeparatorIndexDelta;
+                
+                if (standardizedUUID.length > insertionIndex)
+                {
+                    [standardizedUUID insertString:uuidSeparator
+                                       atIndex:insertionIndex];
+                }
+            }
+
+            uuid = [NSString stringWithString:standardizedUUID];
+        }
         else
             uuid = @"???";
         
@@ -407,12 +428,28 @@ NSInteger binaryImageSort(id binary1, id binary2, void *context);
             fmt = @"%10#" PRIx64 " - %10#" PRIx64 " %@%@ %@  <%@> %@\n";
         }
 
+        NSString *binaryName = nil;
+        
+        NSString *possibleBundlePath = [[[imageInfo.imageName stringByDeletingLastPathComponent]
+                                         stringByDeletingLastPathComponent] stringByDeletingLastPathComponent];
+        
+        NSBundle *imageBundle = [NSBundle bundleWithPath:possibleBundlePath];
+        
+        if (nil == imageBundle || nil == imageBundle.bundleIdentifier)
+        {
+            binaryName = [imageInfo.imageName lastPathComponent];
+        }
+        else
+        {
+            binaryName = [imageBundle.bundleIdentifier copy];
+        }
+        
         [text appendFormat: fmt,
                             imageInfo.imageBaseAddress,
                             imageInfo.imageBaseAddress + (MAX(1, imageInfo.imageSize) - 1), // The Apple format uses an inclusive range
                             binaryDesignator,
-                            [imageInfo.imageName lastPathComponent],
-                            archName,
+                            binaryName,
+                            [NSString stringWithFormat:@"(%@)", archName, nil],
                             uuid,
                             imageInfo.imageName];
     }
