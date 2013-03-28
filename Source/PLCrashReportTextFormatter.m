@@ -532,31 +532,32 @@ static NSString *uuidSeparator = @"-";
 
     /* If symbol info is available, the format used in Apple's reports is Sym + OffsetFromSym. Otherwise,
      * the format used is imageBaseAddress + offsetToIP */
-    if (frameInfo.symbolInfo != nil) {
-        NSString *symbolName = frameInfo.symbolInfo.symbolName;
-
-        /* Apple strips the _ symbol prefix in their reports. Only OS X makes use of an
-         * underscore symbol prefix by default. */
-        if ([symbolName rangeOfString: @"_"].location == 0 && [symbolName length] > 1) {
-            switch (report.systemInfo.operatingSystem) {
-                case PLCrashReportOperatingSystemMacOSX:
-                case PLCrashReportOperatingSystemiPhoneOS:
-                case PLCrashReportOperatingSystemiPhoneSimulator:
-                    symbolName = [symbolName substringFromIndex: 1];
-                    break;
-
-                default:
-                    NSLog(@"Symbol prefix rules are unknown for this OS!");
-                    break;
-            }
-        }
-        
-        
-        uint64_t symOffset = frameInfo.instructionPointer - frameInfo.symbolInfo.startAddress;
-        symbolString = [NSString stringWithFormat: @"%@ + %" PRId64, symbolName, symOffset];
-    } else {
-        symbolString = [NSString stringWithFormat: @"0x%" PRIx64 " + %" PRId64, baseAddress, pcOffset];
-    }
+//    if (frameInfo.symbolInfo != nil) {
+//        NSString *symbolName = frameInfo.symbolInfo.symbolName;
+//
+//        /* Apple strips the _ symbol prefix in their reports. Only OS X makes use of an
+//         * underscore symbol prefix by default. */
+//        if ([symbolName rangeOfString: @"_"].location == 0 && [symbolName length] > 1) {
+//            switch (report.systemInfo.operatingSystem) {
+//                case PLCrashReportOperatingSystemMacOSX:
+//                case PLCrashReportOperatingSystemiPhoneOS:
+//                case PLCrashReportOperatingSystemiPhoneSimulator:
+//                    symbolName = [symbolName substringFromIndex: 1];
+//                    break;
+//
+//                default:
+//                    NSLog(@"Symbol prefix rules are unknown for this OS!");
+//                    break;
+//            }
+//        }
+//        
+//        
+//        uint64_t symOffset = frameInfo.instructionPointer - frameInfo.symbolInfo.startAddress;
+//        symbolString = [NSString stringWithFormat: @"%@ + %" PRId64, symbolName, symOffset];
+//    } else {
+    
+    symbolString = [NSString stringWithFormat: @"0x%" PRIx64 " + %" PRId64, baseAddress, pcOffset];
+    
 
     /* Note that width specifiers are ignored for %@, but work for C strings.
      * UTF-8 is not correctly handled with %s (it depends on the system encoding), but
