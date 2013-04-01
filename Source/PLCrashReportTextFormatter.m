@@ -508,14 +508,17 @@ static NSString *uuidSeparator = @"-";
     NSString *imageName = @"\?\?\?";
     NSString *symbolString = nil;
     
+    NSString *mainAppBundlePath = [[report.processInfo.processPath stringByDeletingLastPathComponent] stringByDeletingLastPathComponent];
+    NSString *imageBundlePath = @"";
+    
     PLCrashReportBinaryImageInfo *imageInfo = [report imageForAddress: frameInfo.instructionPointer];
     if (imageInfo != nil) {
         
         NSURL *imageURL = [NSURL fileURLWithPath:imageInfo.imageName];
-        NSString *possibleBundlePath = [[[[imageURL URLByDeletingLastPathComponent]
-                                          URLByDeletingLastPathComponent] URLByDeletingLastPathComponent] path];
+        imageBundlePath = [[[[imageURL URLByDeletingLastPathComponent]
+                            URLByDeletingLastPathComponent] URLByDeletingLastPathComponent] path];
         
-        NSBundle *imageBundle = [NSBundle bundleWithPath:possibleBundlePath];
+        NSBundle *imageBundle = [NSBundle bundleWithPath:imageBundlePath];
         
         if (nil == imageBundle || nil == imageBundle.bundleIdentifier)
         {
@@ -533,7 +536,8 @@ static NSString *uuidSeparator = @"-";
     /* If symbol info is available, the format used in Apple's reports is Sym + OffsetFromSym. Otherwise,
      * the format used is imageBaseAddress + offsetToIP */
     if (frameInfo.symbolInfo != nil &&
-        ![imageName isEqualToString:report.applicationInfo.applicationIdentifier])
+        ![imageName isEqualToString:report.applicationInfo.applicationIdentifier] &&
+        ![imageBundlePath isEqualToString:mainAppBundlePath])
     {
         NSString *symbolName = frameInfo.symbolInfo.symbolName;
 
