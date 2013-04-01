@@ -532,7 +532,9 @@ static NSString *uuidSeparator = @"-";
 
     /* If symbol info is available, the format used in Apple's reports is Sym + OffsetFromSym. Otherwise,
      * the format used is imageBaseAddress + offsetToIP */
-    if (frameInfo.symbolInfo != nil) {
+    if (frameInfo.symbolInfo != nil &&
+        ![imageName isEqualToString:report.applicationInfo.applicationIdentifier])
+    {
         NSString *symbolName = frameInfo.symbolInfo.symbolName;
 
         /* Apple strips the _ symbol prefix in their reports. Only OS X makes use of an
