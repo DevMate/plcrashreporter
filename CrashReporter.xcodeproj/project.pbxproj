@@ -759,6 +759,9 @@
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
+		020628C61754A53800B29160 /* 32bit.xcconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; name = 32bit.xcconfig; path = "Build Configs/32bit.xcconfig"; sourceTree = "<group>"; };
+		020628C71754A54600B29160 /* 64bit.xcconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; name = 64bit.xcconfig; path = "Build Configs/64bit.xcconfig"; sourceTree = "<group>"; };
+		020628C81754A6A200B29160 /* iOS.xcconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; path = iOS.xcconfig; sourceTree = "<group>"; };
 		050DE24D0F61B80B00152ED3 /* Fuzz Testing */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = "Fuzz Testing"; sourceTree = BUILT_PRODUCTS_DIR; };
 		050DE28D0F61BB1D00152ED3 /* fuzz_report.plcrash */ = {isa = PBXFileReference; lastKnownFileType = file; path = fuzz_report.plcrash; sourceTree = "<group>"; };
 		050DE2A80F61BD8D00152ED3 /* fuzz-main.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "fuzz-main.m"; sourceTree = "<group>"; };
@@ -1006,6 +1009,16 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		020628C51754A51600B29160 /* Build Configs */ = {
+			isa = PBXGroup;
+			children = (
+				020628C61754A53800B29160 /* 32bit.xcconfig */,
+				020628C71754A54600B29160 /* 64bit.xcconfig */,
+				020628C81754A6A200B29160 /* iOS.xcconfig */,
+			);
+			name = "Build Configs";
+			sourceTree = "<group>";
+		};
 		034768DFFF38A50411DB9C8B /* Products */ = {
 			isa = PBXGroup;
 			children = (
@@ -1441,6 +1454,7 @@
 		0867D691FE84028FC02AAC07 /* CrashReporter */ = {
 			isa = PBXGroup;
 			children = (
+				020628C51754A51600B29160 /* Build Configs */,
 				08FB77AEFE84172EC02AAC07 /* Source */,
 				32C88DFF0371C24200C91783 /* Other Sources */,
 				089C1665FE841158C02AAC07 /* Resources */,
@@ -2614,6 +2628,397 @@
 /* End PBXTargetDependency section */
 
 /* Begin XCBuildConfiguration section */
+		020628B21754A09700B29160 /* Deployment-32-bit */ = {
+			isa = XCBuildConfiguration;
+			baseConfigurationReference = 020628C61754A53800B29160 /* 32bit.xcconfig */;
+			buildSettings = {
+				CURRENT_PROJECT_VERSION = "2.0-beta1";
+				GCC_C_LANGUAGE_STANDARD = c99;
+				GCC_GENERATE_DEBUGGING_SYMBOLS = NO;
+				GCC_PREFIX_HEADER = "$(SRCROOT)/Source/PLCrashReporterNamespace.h";
+				HEADER_SEARCH_PATHS = (
+					"\"$(SRCROOT)/$(DERIVED_FILES_DIR)\"",
+					"\"$(SRCROOT)/Dependencies/protobuf-2.0.3/include\"",
+				);
+				MACOSX_DEPLOYMENT_TARGET = 10.5;
+				OTHER_CFLAGS = (
+					"$(inherited)",
+					"-D$(PL_BUILD_CONFIG_FLAG)=1",
+				);
+				PL_BUILD_CONFIG_FLAG = PLCF_RELEASE_BUILD;
+				SDKROOT = macosx;
+				WARNING_CFLAGS = (
+					"-Wall",
+					"-Werror",
+				);
+			};
+			name = "Deployment-32-bit";
+		};
+		020628B31754A09700B29160 /* Deployment-32-bit */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				COMBINE_HIDPI_IMAGES = YES;
+				COPY_PHASE_STRIP = YES;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				PRODUCT_NAME = PLCrashReporter;
+				ZERO_LINK = NO;
+			};
+			name = "Deployment-32-bit";
+		};
+		020628B41754A09700B29160 /* Deployment-32-bit */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				COMBINE_HIDPI_IMAGES = YES;
+				COPY_PHASE_STRIP = YES;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				PRODUCT_NAME = CrashReporter;
+				ZERO_LINK = NO;
+			};
+			name = "Deployment-32-bit";
+		};
+		020628B51754A09700B29160 /* Deployment-32-bit */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				ARCHS = "$(ARCHS_STANDARD_32_64_BIT)";
+				COMBINE_HIDPI_IMAGES = YES;
+				COPY_PHASE_STRIP = YES;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				EFFECTIVE_PLATFORM_NAME = "-MacOSX";
+				EXPORTED_SYMBOLS_FILE = Resources/CrashReporter.exp;
+				GCC_MODEL_TUNING = G5;
+				GENERATE_MASTER_OBJECT_FILE = YES;
+				INSTALL_PATH = /usr/local/lib;
+				OTHER_LDFLAGS = (
+					"-framework",
+					Foundation,
+					"-framework",
+					AppKit,
+				);
+				PRODUCT_NAME = "CrashReporter$(EFFECTIVE_PLATFORM_NAME)-Static";
+				SDKROOT = macosx;
+				ZERO_LINK = NO;
+			};
+			name = "Deployment-32-bit";
+		};
+		020628B61754A09700B29160 /* Deployment-32-bit */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				COMBINE_HIDPI_IMAGES = YES;
+				CONFIGURATION_BUILD_DIR = "$(BUILD_DIR)/$(CONFIGURATION)";
+				CONFIGURATION_TEMP_DIR = "$(PROJECT_TEMP_DIR)/$(CONFIGURATION)";
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				DYLIB_COMPATIBILITY_VERSION = 1;
+				DYLIB_CURRENT_VERSION = 1;
+				EFFECTIVE_PLATFORM_NAME = "-MacOSX";
+				EXPORTED_SYMBOLS_FILE = Resources/CrashReporter.exp;
+				FRAMEWORK_VERSION = A;
+				GCC_MODEL_TUNING = G5;
+				INFOPLIST_FILE = Resources/Info.plist;
+				INSTALL_PATH = "@rpath";
+				LD_DYLIB_INSTALL_NAME = "$(DYLIB_INSTALL_NAME_BASE:standardizepath)/DevMateProblemReporter.framework/Versions/A/Frameworks/$(EXECUTABLE_PATH)";
+				PRODUCT_NAME = CrashReporter;
+				SDKROOT = macosx;
+				WRAPPER_EXTENSION = framework;
+			};
+			name = "Deployment-32-bit";
+		};
+		020628B71754A09700B29160 /* Deployment-32-bit */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				COMBINE_HIDPI_IMAGES = YES;
+				COPY_PHASE_STRIP = YES;
+				DYLIB_COMPATIBILITY_VERSION = 1;
+				DYLIB_CURRENT_VERSION = 1;
+				EFFECTIVE_PLATFORM_NAME = "-iphone";
+				FRAMEWORK_VERSION = A;
+				GCC_MODEL_TUNING = G5;
+				INFOPLIST_FILE = Resources/Info.plist;
+				INSTALL_PATH = "$(HOME)/Library/Frameworks";
+				OTHER_LDFLAGS = (
+					"-framework",
+					Foundation,
+					"-framework",
+					AppKit,
+				);
+				PRODUCT_NAME = CrashReporter;
+				ZERO_LINK = NO;
+			};
+			name = "Deployment-32-bit";
+		};
+		020628B81754A09700B29160 /* Deployment-32-bit */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				ARCHS = "$(ARCHS_STANDARD_32_BIT)";
+				COPY_PHASE_STRIP = YES;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				EXPORTED_SYMBOLS_FILE = Resources/CrashReporter.exp;
+				GCC_THUMB_SUPPORT = NO;
+				GENERATE_MASTER_OBJECT_FILE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 3.0;
+				MACH_O_TYPE = staticlib;
+				ONLY_ACTIVE_ARCH = NO;
+				PRODUCT_NAME = "CrashReporter${EFFECTIVE_PLATFORM_NAME}";
+				SDKROOT = iphoneos;
+				SKIP_INSTALL = NO;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				ZERO_LINK = NO;
+			};
+			name = "Deployment-32-bit";
+		};
+		020628B91754A09700B29160 /* Deployment-32-bit */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				ARCHS = "$(ARCHS_STANDARD_32_BIT)";
+				COPY_PHASE_STRIP = YES;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				EXPORTED_SYMBOLS_FILE = Resources/CrashReporter.exp;
+				GENERATE_MASTER_OBJECT_FILE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 3.0;
+				MACH_O_TYPE = staticlib;
+				ONLY_ACTIVE_ARCH = NO;
+				PRODUCT_NAME = "CrashReporter${EFFECTIVE_PLATFORM_NAME}";
+				SDKROOT = iphonesimulator;
+				SKIP_INSTALL = NO;
+				ZERO_LINK = NO;
+			};
+			name = "Deployment-32-bit";
+		};
+		020628BA1754A09700B29160 /* Deployment-32-bit */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				ARCHS = "$(ARCHS_STANDARD_32_64_BIT)";
+				COPY_PHASE_STRIP = YES;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				EFFECTIVE_PLATFORM_NAME = "-MacOSX";
+				GCC_MODEL_TUNING = G5;
+				INSTALL_PATH = /usr/local/bin;
+				OTHER_LDFLAGS = (
+					"-framework",
+					Foundation,
+					"-framework",
+					AppKit,
+				);
+				PRODUCT_NAME = plcrashutil;
+				SDKROOT = macosx;
+				ZERO_LINK = NO;
+			};
+			name = "Deployment-32-bit";
+		};
+		020628BB1754A09700B29160 /* Deployment-32-bit */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				COMBINE_HIDPI_IMAGES = YES;
+				COPY_PHASE_STRIP = YES;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				PRODUCT_NAME = Tests;
+				ZERO_LINK = NO;
+			};
+			name = "Deployment-32-bit";
+		};
+		020628BC1754A09700B29160 /* Deployment-32-bit */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				ARCHS = "$(ARCHS_STANDARD_32_64_BIT)";
+				COMBINE_HIDPI_IMAGES = YES;
+				COPY_PHASE_STRIP = YES;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				EFFECTIVE_PLATFORM_NAME = "-MacOSX";
+				FRAMEWORK_SEARCH_PATHS = "$(DEVELOPER_LIBRARY_DIR)/Frameworks";
+				GCC_ENABLE_OBJC_EXCEPTIONS = YES;
+				GCC_MODEL_TUNING = G5;
+				INFOPLIST_FILE = "Resources/Tests-MacOSX-Info.plist";
+				INSTALL_PATH = "$(USER_LIBRARY_DIR)/Bundles";
+				LD_RUNPATH_SEARCH_PATHS = "@loader_path/../Frameworks $(DEVELOPER_DIR)/Library/Frameworks";
+				OTHER_LDFLAGS = (
+					"-framework",
+					Cocoa,
+					"-framework",
+					SenTestingKit,
+				);
+				PRODUCT_NAME = "Tests-MacOSX";
+				SDKROOT = macosx;
+				SKIP_INSTALL = YES;
+				TEST_AFTER_BUILD = YES;
+				WARNING_CFLAGS = (
+					"$(inherited)",
+					"$(OTHER_WARNING_NO_ADDRESS)",
+				);
+				WRAPPER_EXTENSION = octest;
+				ZERO_LINK = NO;
+			};
+			name = "Deployment-32-bit";
+		};
+		020628BD1754A09700B29160 /* Deployment-32-bit */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ARCHS = "$(ARCHS_STANDARD_32_BIT)";
+				CODE_SIGN_IDENTITY = "iPhone Developer";
+				COPY_PHASE_STRIP = YES;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				INFOPLIST_FILE = "Resources/Tests-iPhone-Info.plist";
+				INSTALL_PATH = "$(HOME)/Applications";
+				IPHONEOS_DEPLOYMENT_TARGET = 3.0;
+				MACOSX_DEPLOYMENT_TARGET = "";
+				ONLY_ACTIVE_ARCH = NO;
+				OTHER_LDFLAGS = (
+					"-framework",
+					Foundation,
+					"-framework",
+					UIKit,
+				);
+				PRODUCT_NAME = "Tests-iOS-Simulator";
+				SDKROOT = iphonesimulator;
+				SKIP_INSTALL = YES;
+				TEST_AFTER_BUILD = YES;
+				WARNING_CFLAGS = (
+					"$(inherited)",
+					"$(OTHER_WARNING_NO_ADDRESS)",
+				);
+				ZERO_LINK = NO;
+			};
+			name = "Deployment-32-bit";
+		};
+		020628BE1754A09700B29160 /* Deployment-32-bit */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ARCHS = "$(ARCHS_STANDARD_32_BIT)";
+				CODE_SIGN_IDENTITY = "iPhone Developer";
+				COPY_PHASE_STRIP = YES;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				GCC_THUMB_SUPPORT = NO;
+				INFOPLIST_FILE = "Resources/Tests-iPhone-Info.plist";
+				INSTALL_PATH = "$(HOME)/Applications";
+				IPHONEOS_DEPLOYMENT_TARGET = 3.0;
+				ONLY_ACTIVE_ARCH = NO;
+				OTHER_LDFLAGS = (
+					"-framework",
+					Foundation,
+					"-framework",
+					UIKit,
+				);
+				PRODUCT_NAME = "Tests-iOS-Device";
+				SDKROOT = iphoneos;
+				SKIP_INSTALL = YES;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				WARNING_CFLAGS = (
+					"$(inherited)",
+					"$(OTHER_WARNING_NO_ADDRESS)",
+				);
+				ZERO_LINK = NO;
+			};
+			name = "Deployment-32-bit";
+		};
+		020628BF1754A09700B29160 /* Deployment-32-bit */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				ARCHS = "$(ARCHS_STANDARD_32_64_BIT)";
+				COMBINE_HIDPI_IMAGES = YES;
+				COPY_PHASE_STRIP = YES;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				EFFECTIVE_PLATFORM_NAME = "-MacOSX";
+				GCC_MODEL_TUNING = G5;
+				GCC_VERSION = com.apple.compilers.llvm.clang.1_0;
+				INFOPLIST_FILE = "Resources/DemoCrash-Info.plist";
+				INSTALL_PATH = "$(HOME)/Applications";
+				LD_RUNPATH_SEARCH_PATHS = "@executable_path/../Frameworks";
+				OTHER_LDFLAGS = (
+					"-framework",
+					Foundation,
+					"-framework",
+					AppKit,
+				);
+				PRODUCT_NAME = DemoCrash;
+				SDKROOT = "";
+				SKIP_INSTALL = YES;
+				ZERO_LINK = NO;
+			};
+			name = "Deployment-32-bit";
+		};
+		020628C01754A09700B29160 /* Deployment-32-bit */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				ARCHS = "$(ARCHS_STANDARD_32_BIT)";
+				CODE_SIGN_IDENTITY = "iPhone Developer";
+				COPY_PHASE_STRIP = YES;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				FRAMEWORK_SEARCH_PATHS = (
+					"$(inherited)",
+					"$(BUILD_ROOT)",
+				);
+				GCC_THUMB_SUPPORT = NO;
+				INFOPLIST_FILE = "Resources/DemoCrash-Info.plist";
+				INSTALL_PATH = "$(HOME)/Applications";
+				IPHONEOS_DEPLOYMENT_TARGET = 3.0;
+				OTHER_LDFLAGS = (
+					"-framework",
+					Foundation,
+					"-framework",
+					UIKit,
+				);
+				PRODUCT_NAME = "DemoCrash-iOS-Device";
+				SDKROOT = iphoneos;
+				ZERO_LINK = NO;
+			};
+			name = "Deployment-32-bit";
+		};
+		020628C11754A09700B29160 /* Deployment-32-bit */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				ARCHS = "$(ARCHS_STANDARD_32_BIT)";
+				CODE_SIGN_IDENTITY = "iPhone Developer";
+				COPY_PHASE_STRIP = YES;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				FRAMEWORK_SEARCH_PATHS = (
+					"$(inherited)",
+					"$(BUILD_ROOT)",
+				);
+				INFOPLIST_FILE = "Resources/DemoCrash-Info.plist";
+				INSTALL_PATH = "$(HOME)/Applications";
+				IPHONEOS_DEPLOYMENT_TARGET = 3.0;
+				MACOSX_DEPLOYMENT_TARGET = "";
+				OTHER_LDFLAGS = (
+					"-framework",
+					Foundation,
+					"-framework",
+					UIKit,
+				);
+				PRODUCT_NAME = "DemoCrash-iOS-Simulator";
+				SDKROOT = iphonesimulator;
+				ZERO_LINK = NO;
+			};
+			name = "Deployment-32-bit";
+		};
+		020628C21754A09700B29160 /* Deployment-32-bit */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				COPY_PHASE_STRIP = YES;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				EFFECTIVE_PLATFORM_NAME = "-MacOSX";
+				GCC_MODEL_TUNING = G5;
+				INSTALL_PATH = /usr/local/bin;
+				OTHER_LDFLAGS = (
+					"-framework",
+					Foundation,
+					"-framework",
+					AppKit,
+				);
+				PRODUCT_NAME = "Fuzz Testing";
+				SDKROOT = macosx;
+				ZERO_LINK = NO;
+			};
+			name = "Deployment-32-bit";
+		};
 		0502E45B12BD0D0000ACDCB5 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
@@ -3302,7 +3707,6 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
-				ARCHS = "$(ARCHS_STANDARD_32_64_BIT)";
 				COMBINE_HIDPI_IMAGES = YES;
 				CONFIGURATION_BUILD_DIR = "$(BUILD_DIR)/$(CONFIGURATION)";
 				CONFIGURATION_TEMP_DIR = "$(PROJECT_TEMP_DIR)/$(CONFIGURATION)";
@@ -3328,7 +3732,6 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
-				ARCHS = "$(ARCHS_STANDARD_32_64_BIT)";
 				COMBINE_HIDPI_IMAGES = YES;
 				CONFIGURATION_BUILD_DIR = "$(BUILD_DIR)/$(CONFIGURATION)";
 				CONFIGURATION_TEMP_DIR = "$(PROJECT_TEMP_DIR)/$(CONFIGURATION)";
@@ -3351,7 +3754,6 @@
 		1DEB91B208733DA50010E9CD /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				ARCHS = "$(ARCHS_STANDARD_32_64_BIT)";
 				CURRENT_PROJECT_VERSION = "2.0-beta1";
 				GCC_C_LANGUAGE_STANDARD = c99;
 				GCC_OPTIMIZATION_LEVEL = 0;
@@ -3365,7 +3767,6 @@
 				);
 				PL_BUILD_CONFIG_FLAG = PLCF_DEBUG_BUILD;
 				SDKROOT = macosx;
-				VALID_ARCHS = "i386 ppc armv7 armv7s armv6 x86_64";
 				WARNING_CFLAGS = (
 					"-Wall",
 					"-Werror",
@@ -3376,7 +3777,6 @@
 		1DEB91B308733DA50010E9CD /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				ARCHS = "$(ARCHS_STANDARD_32_64_BIT)";
 				CURRENT_PROJECT_VERSION = "2.0-beta1";
 				GCC_C_LANGUAGE_STANDARD = c99;
 				GCC_GENERATE_DEBUGGING_SYMBOLS = NO;
@@ -3392,7 +3792,6 @@
 				);
 				PL_BUILD_CONFIG_FLAG = PLCF_RELEASE_BUILD;
 				SDKROOT = macosx;
-				VALID_ARCHS = "i386 ppc armv7 armv7s armv6 x86_64";
 				WARNING_CFLAGS = (
 					"-Wall",
 					"-Werror",
@@ -3400,10 +3799,10 @@
 			};
 			name = Release;
 		};
-		B86B40FC170C9E7B006E0FFA /* Deployment */ = {
+		B86B40FC170C9E7B006E0FFA /* Deployment-64-bit */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = 020628C71754A54600B29160 /* 64bit.xcconfig */;
 			buildSettings = {
-				ARCHS = "$(ARCHS_STANDARD_32_64_BIT)";
 				CURRENT_PROJECT_VERSION = "2.0-beta1";
 				GCC_C_LANGUAGE_STANDARD = c99;
 				GCC_GENERATE_DEBUGGING_SYMBOLS = NO;
@@ -3419,15 +3818,14 @@
 				);
 				PL_BUILD_CONFIG_FLAG = PLCF_RELEASE_BUILD;
 				SDKROOT = macosx;
-				VALID_ARCHS = "i386 ppc armv7 armv7s armv6 x86_64";
 				WARNING_CFLAGS = (
 					"-Wall",
 					"-Werror",
 				);
 			};
-			name = Deployment;
+			name = "Deployment-64-bit";
 		};
-		B86B40FD170C9E7B006E0FFA /* Deployment */ = {
+		B86B40FD170C9E7B006E0FFA /* Deployment-64-bit */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				COMBINE_HIDPI_IMAGES = YES;
@@ -3436,9 +3834,9 @@
 				PRODUCT_NAME = PLCrashReporter;
 				ZERO_LINK = NO;
 			};
-			name = Deployment;
+			name = "Deployment-64-bit";
 		};
-		B86B40FE170C9E7B006E0FFA /* Deployment */ = {
+		B86B40FE170C9E7B006E0FFA /* Deployment-64-bit */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				COMBINE_HIDPI_IMAGES = YES;
@@ -3447,9 +3845,9 @@
 				PRODUCT_NAME = CrashReporter;
 				ZERO_LINK = NO;
 			};
-			name = Deployment;
+			name = "Deployment-64-bit";
 		};
-		B86B40FF170C9E7B006E0FFA /* Deployment */ = {
+		B86B40FF170C9E7B006E0FFA /* Deployment-64-bit */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
@@ -3472,13 +3870,12 @@
 				SDKROOT = macosx;
 				ZERO_LINK = NO;
 			};
-			name = Deployment;
+			name = "Deployment-64-bit";
 		};
-		B86B4100170C9E7B006E0FFA /* Deployment */ = {
+		B86B4100170C9E7B006E0FFA /* Deployment-64-bit */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
-				ARCHS = "$(ARCHS_STANDARD_32_64_BIT)";
 				COMBINE_HIDPI_IMAGES = YES;
 				CONFIGURATION_BUILD_DIR = "$(BUILD_DIR)/$(CONFIGURATION)";
 				CONFIGURATION_TEMP_DIR = "$(PROJECT_TEMP_DIR)/$(CONFIGURATION)";
@@ -3496,9 +3893,9 @@
 				SDKROOT = macosx;
 				WRAPPER_EXTENSION = framework;
 			};
-			name = Deployment;
+			name = "Deployment-64-bit";
 		};
-		B86B4101170C9E7B006E0FFA /* Deployment */ = {
+		B86B4101170C9E7B006E0FFA /* Deployment-64-bit */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
@@ -3520,9 +3917,9 @@
 				PRODUCT_NAME = CrashReporter;
 				ZERO_LINK = NO;
 			};
-			name = Deployment;
+			name = "Deployment-64-bit";
 		};
-		B86B4102170C9E7B006E0FFA /* Deployment */ = {
+		B86B4102170C9E7B006E0FFA /* Deployment-64-bit */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
@@ -3541,9 +3938,9 @@
 				TARGETED_DEVICE_FAMILY = "1,2";
 				ZERO_LINK = NO;
 			};
-			name = Deployment;
+			name = "Deployment-64-bit";
 		};
-		B86B4103170C9E7B006E0FFA /* Deployment */ = {
+		B86B4103170C9E7B006E0FFA /* Deployment-64-bit */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
@@ -3560,9 +3957,9 @@
 				SKIP_INSTALL = NO;
 				ZERO_LINK = NO;
 			};
-			name = Deployment;
+			name = "Deployment-64-bit";
 		};
-		B86B4104170C9E7B006E0FFA /* Deployment */ = {
+		B86B4104170C9E7B006E0FFA /* Deployment-64-bit */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
@@ -3582,9 +3979,9 @@
 				SDKROOT = macosx;
 				ZERO_LINK = NO;
 			};
-			name = Deployment;
+			name = "Deployment-64-bit";
 		};
-		B86B4105170C9E7B006E0FFA /* Deployment */ = {
+		B86B4105170C9E7B006E0FFA /* Deployment-64-bit */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				COMBINE_HIDPI_IMAGES = YES;
@@ -3593,9 +3990,9 @@
 				PRODUCT_NAME = Tests;
 				ZERO_LINK = NO;
 			};
-			name = Deployment;
+			name = "Deployment-64-bit";
 		};
-		B86B4106170C9E7B006E0FFA /* Deployment */ = {
+		B86B4106170C9E7B006E0FFA /* Deployment-64-bit */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
@@ -3627,9 +4024,9 @@
 				WRAPPER_EXTENSION = octest;
 				ZERO_LINK = NO;
 			};
-			name = Deployment;
+			name = "Deployment-64-bit";
 		};
-		B86B4107170C9E7B006E0FFA /* Deployment */ = {
+		B86B4107170C9E7B006E0FFA /* Deployment-64-bit */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ARCHS = "$(ARCHS_STANDARD_32_BIT)";
@@ -3657,9 +4054,9 @@
 				);
 				ZERO_LINK = NO;
 			};
-			name = Deployment;
+			name = "Deployment-64-bit";
 		};
-		B86B4108170C9E7B006E0FFA /* Deployment */ = {
+		B86B4108170C9E7B006E0FFA /* Deployment-64-bit */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ARCHS = "$(ARCHS_STANDARD_32_BIT)";
@@ -3687,9 +4084,9 @@
 				);
 				ZERO_LINK = NO;
 			};
-			name = Deployment;
+			name = "Deployment-64-bit";
 		};
-		B86B4109170C9E7B006E0FFA /* Deployment */ = {
+		B86B4109170C9E7B006E0FFA /* Deployment-64-bit */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
@@ -3714,9 +4111,9 @@
 				SKIP_INSTALL = YES;
 				ZERO_LINK = NO;
 			};
-			name = Deployment;
+			name = "Deployment-64-bit";
 		};
-		B86B410A170C9E7B006E0FFA /* Deployment */ = {
+		B86B410A170C9E7B006E0FFA /* Deployment-64-bit */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
@@ -3742,9 +4139,9 @@
 				SDKROOT = iphoneos;
 				ZERO_LINK = NO;
 			};
-			name = Deployment;
+			name = "Deployment-64-bit";
 		};
-		B86B410B170C9E7B006E0FFA /* Deployment */ = {
+		B86B410B170C9E7B006E0FFA /* Deployment-64-bit */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
@@ -3770,9 +4167,9 @@
 				SDKROOT = iphonesimulator;
 				ZERO_LINK = NO;
 			};
-			name = Deployment;
+			name = "Deployment-64-bit";
 		};
-		B86B410C170C9E7B006E0FFA /* Deployment */ = {
+		B86B410C170C9E7B006E0FFA /* Deployment-64-bit */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
@@ -3791,7 +4188,7 @@
 				SDKROOT = macosx;
 				ZERO_LINK = NO;
 			};
-			name = Deployment;
+			name = "Deployment-64-bit";
 		};
 /* End XCBuildConfiguration section */
 
@@ -3801,7 +4198,8 @@
 			buildConfigurations = (
 				0502E45B12BD0D0000ACDCB5 /* Debug */,
 				0502E45C12BD0D0000ACDCB5 /* Release */,
-				B86B4105170C9E7B006E0FFA /* Deployment */,
+				B86B4105170C9E7B006E0FFA /* Deployment-64-bit */,
+				020628BB1754A09700B29160 /* Deployment-32-bit */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
@@ -3811,7 +4209,8 @@
 			buildConfigurations = (
 				050DE24F0F61B80C00152ED3 /* Debug */,
 				050DE2500F61B80C00152ED3 /* Release */,
-				B86B410C170C9E7B006E0FFA /* Deployment */,
+				B86B410C170C9E7B006E0FFA /* Deployment-64-bit */,
+				020628C21754A09700B29160 /* Deployment-32-bit */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
@@ -3821,7 +4220,8 @@
 			buildConfigurations = (
 				052A45D2136353FB00987004 /* Debug */,
 				052A45D3136353FB00987004 /* Release */,
-				B86B410A170C9E7B006E0FFA /* Deployment */,
+				B86B410A170C9E7B006E0FFA /* Deployment-64-bit */,
+				020628C01754A09700B29160 /* Deployment-32-bit */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
@@ -3831,7 +4231,8 @@
 			buildConfigurations = (
 				052A464D136355FD00987004 /* Debug */,
 				052A464E136355FD00987004 /* Release */,
-				B86B410B170C9E7B006E0FFA /* Deployment */,
+				B86B410B170C9E7B006E0FFA /* Deployment-64-bit */,
+				020628C11754A09700B29160 /* Deployment-32-bit */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
@@ -3841,7 +4242,8 @@
 			buildConfigurations = (
 				058812BC1040582E009128FB /* Debug */,
 				058812BD1040582E009128FB /* Release */,
-				B86B4101170C9E7B006E0FFA /* Deployment */,
+				B86B4101170C9E7B006E0FFA /* Deployment-64-bit */,
+				020628B71754A09700B29160 /* Deployment-32-bit */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
@@ -3851,7 +4253,8 @@
 			buildConfigurations = (
 				058812D510405908009128FB /* Debug */,
 				058812D610405908009128FB /* Release */,
-				B86B40FD170C9E7B006E0FFA /* Deployment */,
+				B86B40FD170C9E7B006E0FFA /* Deployment-64-bit */,
+				020628B31754A09700B29160 /* Deployment-32-bit */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
@@ -3861,7 +4264,8 @@
 			buildConfigurations = (
 				05CD31530EE936AA000FDE88 /* Debug */,
 				05CD31540EE936AA000FDE88 /* Release */,
-				B86B4102170C9E7B006E0FFA /* Deployment */,
+				B86B4102170C9E7B006E0FFA /* Deployment-64-bit */,
+				020628B81754A09700B29160 /* Deployment-32-bit */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
@@ -3871,7 +4275,8 @@
 			buildConfigurations = (
 				05CD31640EE93906000FDE88 /* Debug */,
 				05CD31650EE93906000FDE88 /* Release */,
-				B86B4103170C9E7B006E0FFA /* Deployment */,
+				B86B4103170C9E7B006E0FFA /* Deployment-64-bit */,
+				020628B91754A09700B29160 /* Deployment-32-bit */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
@@ -3881,7 +4286,8 @@
 			buildConfigurations = (
 				05CD31690EE939D1000FDE88 /* Debug */,
 				05CD316A0EE939D1000FDE88 /* Release */,
-				B86B40FE170C9E7B006E0FFA /* Deployment */,
+				B86B40FE170C9E7B006E0FFA /* Deployment-64-bit */,
+				020628B41754A09700B29160 /* Deployment-32-bit */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
@@ -3891,7 +4297,8 @@
 			buildConfigurations = (
 				05CD326B0EE93DC4000FDE88 /* Debug */,
 				05CD326C0EE93DC4000FDE88 /* Release */,
-				B86B4106170C9E7B006E0FFA /* Deployment */,
+				B86B4106170C9E7B006E0FFA /* Deployment-64-bit */,
+				020628BC1754A09700B29160 /* Deployment-32-bit */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
@@ -3901,7 +4308,8 @@
 			buildConfigurations = (
 				05CD32AC0EE94063000FDE88 /* Debug */,
 				05CD32AD0EE94063000FDE88 /* Release */,
-				B86B4107170C9E7B006E0FFA /* Deployment */,
+				B86B4107170C9E7B006E0FFA /* Deployment-64-bit */,
+				020628BD1754A09700B29160 /* Deployment-32-bit */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
@@ -3911,7 +4319,8 @@
 			buildConfigurations = (
 				05CD33270EE9443A000FDE88 /* Debug */,
 				05CD33280EE9443A000FDE88 /* Release */,
-				B86B4108170C9E7B006E0FFA /* Deployment */,
+				B86B4108170C9E7B006E0FFA /* Deployment-64-bit */,
+				020628BE1754A09700B29160 /* Deployment-32-bit */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
@@ -3921,7 +4330,8 @@
 			buildConfigurations = (
 				05E731E50EFA1A3E005EDFB7 /* Debug */,
 				05E731E60EFA1A3E005EDFB7 /* Release */,
-				B86B4104170C9E7B006E0FFA /* Deployment */,
+				B86B4104170C9E7B006E0FFA /* Deployment-64-bit */,
+				020628BA1754A09700B29160 /* Deployment-32-bit */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
@@ -3931,7 +4341,8 @@
 			buildConfigurations = (
 				05E731F40EFA1AAC005EDFB7 /* Debug */,
 				05E731F50EFA1AAC005EDFB7 /* Release */,
-				B86B40FF170C9E7B006E0FFA /* Deployment */,
+				B86B40FF170C9E7B006E0FFA /* Deployment-64-bit */,
+				020628B51754A09700B29160 /* Deployment-32-bit */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
@@ -3941,7 +4352,8 @@
 			buildConfigurations = (
 				05F40CEA0EF7AB81008050CF /* Debug */,
 				05F40CEB0EF7AB81008050CF /* Release */,
-				B86B4109170C9E7B006E0FFA /* Deployment */,
+				B86B4109170C9E7B006E0FFA /* Deployment-64-bit */,
+				020628BF1754A09700B29160 /* Deployment-32-bit */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
@@ -3951,7 +4363,8 @@
 			buildConfigurations = (
 				1DEB91AE08733DA50010E9CD /* Debug */,
 				1DEB91AF08733DA50010E9CD /* Release */,
-				B86B4100170C9E7B006E0FFA /* Deployment */,
+				B86B4100170C9E7B006E0FFA /* Deployment-64-bit */,
+				020628B61754A09700B29160 /* Deployment-32-bit */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
@@ -3961,7 +4374,8 @@
 			buildConfigurations = (
 				1DEB91B208733DA50010E9CD /* Debug */,
 				1DEB91B308733DA50010E9CD /* Release */,
-				B86B40FC170C9E7B006E0FFA /* Deployment */,
+				B86B40FC170C9E7B006E0FFA /* Deployment-64-bit */,
+				020628B21754A09700B29160 /* Deployment-32-bit */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;

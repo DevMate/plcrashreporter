@@ -1,0 +1,10 @@
+//
+//  32bit.xcconfig
+//  CrashReporter
+//
+//  Created by Vera Tkachenko on 28.05.13.
+//
+//
+
+ARCHS = i386
+VALID_ARCHS = i386

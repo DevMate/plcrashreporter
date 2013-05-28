@@ -1,0 +1,10 @@
+//
+//  64bit.xcconfig
+//  CrashReporter
+//
+//  Created by Vera Tkachenko on 28.05.13.
+//
+//
+
+ARCHS = x86_64
+VALID_ARCHS = x86_64
