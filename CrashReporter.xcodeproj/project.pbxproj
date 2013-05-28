@@ -3753,6 +3753,7 @@
 		};
 		1DEB91B208733DA50010E9CD /* Debug */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = 020628C71754A54600B29160 /* 64bit.xcconfig */;
 			buildSettings = {
 				CURRENT_PROJECT_VERSION = "2.0-beta1";
 				GCC_C_LANGUAGE_STANDARD = c99;
