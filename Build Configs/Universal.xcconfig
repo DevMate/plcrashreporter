@@ -1,0 +1,10 @@
+//
+//  Universal.xcconfig
+//  CrashReporter
+//
+//  Created by tanlan on 6/3/13.
+//
+//
+
+ARCHS = i386 x86_64
+VALID_ARCHS = i386 x86_64

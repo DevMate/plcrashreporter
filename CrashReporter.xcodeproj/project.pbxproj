@@ -761,7 +761,6 @@
 /* Begin PBXFileReference section */
 		020628C61754A53800B29160 /* 32bit.xcconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; name = 32bit.xcconfig; path = "Build Configs/32bit.xcconfig"; sourceTree = "<group>"; };
 		020628C71754A54600B29160 /* 64bit.xcconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; name = 64bit.xcconfig; path = "Build Configs/64bit.xcconfig"; sourceTree = "<group>"; };
-		020628C81754A6A200B29160 /* iOS.xcconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; path = iOS.xcconfig; sourceTree = "<group>"; };
 		050DE24D0F61B80B00152ED3 /* Fuzz Testing */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = "Fuzz Testing"; sourceTree = BUILT_PRODUCTS_DIR; };
 		050DE28D0F61BB1D00152ED3 /* fuzz_report.plcrash */ = {isa = PBXFileReference; lastKnownFileType = file; path = fuzz_report.plcrash; sourceTree = "<group>"; };
 		050DE2A80F61BD8D00152ED3 /* fuzz-main.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "fuzz-main.m"; sourceTree = "<group>"; };
@@ -890,6 +889,8 @@
 		8DC2EF5A0486A6940098B216 /* Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		8DC2EF5B0486A6940098B216 /* CrashReporter.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = CrashReporter.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		B86766F916BC0D6B00CFDBE9 /* AppKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AppKit.framework; path = System/Library/Frameworks/AppKit.framework; sourceTree = SDKROOT; };
+		B8A87519175CE74900968A37 /* Universal.xcconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; name = Universal.xcconfig; path = "Build Configs/Universal.xcconfig"; sourceTree = "<group>"; };
+		B8A8751A175CE76A00968A37 /* iOS.xcconfig */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xcconfig; name = iOS.xcconfig; path = "Build Configs/iOS.xcconfig"; sourceTree = "<group>"; };
 		C21688F816445344000F90ED /* PLCrashAsyncMachOStringTests.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PLCrashAsyncMachOStringTests.m; sourceTree = "<group>"; };
 		C2198DD81640188C006EB46A /* PLCrashAsyncObjCSection.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = PLCrashAsyncObjCSection.c; sourceTree = "<group>"; };
 		C2198DE1164018B2006EB46A /* PLCrashAsyncObjCSection.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = PLCrashAsyncObjCSection.h; sourceTree = "<group>"; };
@@ -1014,7 +1015,8 @@
 			children = (
 				020628C61754A53800B29160 /* 32bit.xcconfig */,
 				020628C71754A54600B29160 /* 64bit.xcconfig */,
-				020628C81754A6A200B29160 /* iOS.xcconfig */,
+				B8A87519175CE74900968A37 /* Universal.xcconfig */,
+				B8A8751A175CE76A00968A37 /* iOS.xcconfig */,
 			);
 			name = "Build Configs";
 			sourceTree = "<group>";
@@ -4191,6 +4193,397 @@
 			};
 			name = "Deployment-64-bit";
 		};
+		B8A8751B175CE8A300968A37 /* Deployment */ = {
+			isa = XCBuildConfiguration;
+			baseConfigurationReference = B8A87519175CE74900968A37 /* Universal.xcconfig */;
+			buildSettings = {
+				CURRENT_PROJECT_VERSION = "2.0-beta1";
+				GCC_C_LANGUAGE_STANDARD = c99;
+				GCC_GENERATE_DEBUGGING_SYMBOLS = NO;
+				GCC_PREFIX_HEADER = "$(SRCROOT)/Source/PLCrashReporterNamespace.h";
+				HEADER_SEARCH_PATHS = (
+					"\"$(SRCROOT)/$(DERIVED_FILES_DIR)\"",
+					"\"$(SRCROOT)/Dependencies/protobuf-2.0.3/include\"",
+				);
+				MACOSX_DEPLOYMENT_TARGET = 10.5;
+				OTHER_CFLAGS = (
+					"$(inherited)",
+					"-D$(PL_BUILD_CONFIG_FLAG)=1",
+				);
+				PL_BUILD_CONFIG_FLAG = PLCF_RELEASE_BUILD;
+				SDKROOT = macosx;
+				WARNING_CFLAGS = (
+					"-Wall",
+					"-Werror",
+				);
+			};
+			name = Deployment;
+		};
+		B8A8751C175CE8A300968A37 /* Deployment */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				COMBINE_HIDPI_IMAGES = YES;
+				COPY_PHASE_STRIP = YES;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				PRODUCT_NAME = PLCrashReporter;
+				ZERO_LINK = NO;
+			};
+			name = Deployment;
+		};
+		B8A8751D175CE8A300968A37 /* Deployment */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				COMBINE_HIDPI_IMAGES = YES;
+				COPY_PHASE_STRIP = YES;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				PRODUCT_NAME = CrashReporter;
+				ZERO_LINK = NO;
+			};
+			name = Deployment;
+		};
+		B8A8751E175CE8A300968A37 /* Deployment */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				ARCHS = "$(ARCHS_STANDARD_32_64_BIT)";
+				COMBINE_HIDPI_IMAGES = YES;
+				COPY_PHASE_STRIP = YES;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				EFFECTIVE_PLATFORM_NAME = "-MacOSX";
+				EXPORTED_SYMBOLS_FILE = Resources/CrashReporter.exp;
+				GCC_MODEL_TUNING = G5;
+				GENERATE_MASTER_OBJECT_FILE = YES;
+				INSTALL_PATH = /usr/local/lib;
+				OTHER_LDFLAGS = (
+					"-framework",
+					Foundation,
+					"-framework",
+					AppKit,
+				);
+				PRODUCT_NAME = "CrashReporter$(EFFECTIVE_PLATFORM_NAME)-Static";
+				SDKROOT = macosx;
+				ZERO_LINK = NO;
+			};
+			name = Deployment;
+		};
+		B8A8751F175CE8A300968A37 /* Deployment */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				COMBINE_HIDPI_IMAGES = YES;
+				CONFIGURATION_BUILD_DIR = "$(BUILD_DIR)/$(CONFIGURATION)";
+				CONFIGURATION_TEMP_DIR = "$(PROJECT_TEMP_DIR)/$(CONFIGURATION)";
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				DYLIB_COMPATIBILITY_VERSION = 1;
+				DYLIB_CURRENT_VERSION = 1;
+				EFFECTIVE_PLATFORM_NAME = "-MacOSX";
+				EXPORTED_SYMBOLS_FILE = Resources/CrashReporter.exp;
+				FRAMEWORK_VERSION = A;
+				GCC_MODEL_TUNING = G5;
+				INFOPLIST_FILE = Resources/Info.plist;
+				INSTALL_PATH = "@rpath";
+				LD_DYLIB_INSTALL_NAME = "$(DYLIB_INSTALL_NAME_BASE:standardizepath)/DevMateProblemReporter.framework/Versions/A/Frameworks/$(EXECUTABLE_PATH)";
+				PRODUCT_NAME = CrashReporter;
+				SDKROOT = macosx;
+				WRAPPER_EXTENSION = framework;
+			};
+			name = Deployment;
+		};
+		B8A87520175CE8A300968A37 /* Deployment */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				COMBINE_HIDPI_IMAGES = YES;
+				COPY_PHASE_STRIP = YES;
+				DYLIB_COMPATIBILITY_VERSION = 1;
+				DYLIB_CURRENT_VERSION = 1;
+				EFFECTIVE_PLATFORM_NAME = "-iphone";
+				FRAMEWORK_VERSION = A;
+				GCC_MODEL_TUNING = G5;
+				INFOPLIST_FILE = Resources/Info.plist;
+				INSTALL_PATH = "$(HOME)/Library/Frameworks";
+				OTHER_LDFLAGS = (
+					"-framework",
+					Foundation,
+					"-framework",
+					AppKit,
+				);
+				PRODUCT_NAME = CrashReporter;
+				ZERO_LINK = NO;
+			};
+			name = Deployment;
+		};
+		B8A87521175CE8A300968A37 /* Deployment */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				ARCHS = "$(ARCHS_STANDARD_32_BIT)";
+				COPY_PHASE_STRIP = YES;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				EXPORTED_SYMBOLS_FILE = Resources/CrashReporter.exp;
+				GCC_THUMB_SUPPORT = NO;
+				GENERATE_MASTER_OBJECT_FILE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 3.0;
+				MACH_O_TYPE = staticlib;
+				ONLY_ACTIVE_ARCH = NO;
+				PRODUCT_NAME = "CrashReporter${EFFECTIVE_PLATFORM_NAME}";
+				SDKROOT = iphoneos;
+				SKIP_INSTALL = NO;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				ZERO_LINK = NO;
+			};
+			name = Deployment;
+		};
+		B8A87522175CE8A300968A37 /* Deployment */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				ARCHS = "$(ARCHS_STANDARD_32_BIT)";
+				COPY_PHASE_STRIP = YES;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				EXPORTED_SYMBOLS_FILE = Resources/CrashReporter.exp;
+				GENERATE_MASTER_OBJECT_FILE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 3.0;
+				MACH_O_TYPE = staticlib;
+				ONLY_ACTIVE_ARCH = NO;
+				PRODUCT_NAME = "CrashReporter${EFFECTIVE_PLATFORM_NAME}";
+				SDKROOT = iphonesimulator;
+				SKIP_INSTALL = NO;
+				ZERO_LINK = NO;
+			};
+			name = Deployment;
+		};
+		B8A87523175CE8A300968A37 /* Deployment */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				ARCHS = "$(ARCHS_STANDARD_32_64_BIT)";
+				COPY_PHASE_STRIP = YES;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				EFFECTIVE_PLATFORM_NAME = "-MacOSX";
+				GCC_MODEL_TUNING = G5;
+				INSTALL_PATH = /usr/local/bin;
+				OTHER_LDFLAGS = (
+					"-framework",
+					Foundation,
+					"-framework",
+					AppKit,
+				);
+				PRODUCT_NAME = plcrashutil;
+				SDKROOT = macosx;
+				ZERO_LINK = NO;
+			};
+			name = Deployment;
+		};
+		B8A87524175CE8A300968A37 /* Deployment */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				COMBINE_HIDPI_IMAGES = YES;
+				COPY_PHASE_STRIP = YES;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				PRODUCT_NAME = Tests;
+				ZERO_LINK = NO;
+			};
+			name = Deployment;
+		};
+		B8A87525175CE8A300968A37 /* Deployment */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				ARCHS = "$(ARCHS_STANDARD_32_64_BIT)";
+				COMBINE_HIDPI_IMAGES = YES;
+				COPY_PHASE_STRIP = YES;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				EFFECTIVE_PLATFORM_NAME = "-MacOSX";
+				FRAMEWORK_SEARCH_PATHS = "$(DEVELOPER_LIBRARY_DIR)/Frameworks";
+				GCC_ENABLE_OBJC_EXCEPTIONS = YES;
+				GCC_MODEL_TUNING = G5;
+				INFOPLIST_FILE = "Resources/Tests-MacOSX-Info.plist";
+				INSTALL_PATH = "$(USER_LIBRARY_DIR)/Bundles";
+				LD_RUNPATH_SEARCH_PATHS = "@loader_path/../Frameworks $(DEVELOPER_DIR)/Library/Frameworks";
+				OTHER_LDFLAGS = (
+					"-framework",
+					Cocoa,
+					"-framework",
+					SenTestingKit,
+				);
+				PRODUCT_NAME = "Tests-MacOSX";
+				SDKROOT = macosx;
+				SKIP_INSTALL = YES;
+				TEST_AFTER_BUILD = YES;
+				WARNING_CFLAGS = (
+					"$(inherited)",
+					"$(OTHER_WARNING_NO_ADDRESS)",
+				);
+				WRAPPER_EXTENSION = octest;
+				ZERO_LINK = NO;
+			};
+			name = Deployment;
+		};
+		B8A87526175CE8A300968A37 /* Deployment */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ARCHS = "$(ARCHS_STANDARD_32_BIT)";
+				CODE_SIGN_IDENTITY = "iPhone Developer";
+				COPY_PHASE_STRIP = YES;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				INFOPLIST_FILE = "Resources/Tests-iPhone-Info.plist";
+				INSTALL_PATH = "$(HOME)/Applications";
+				IPHONEOS_DEPLOYMENT_TARGET = 3.0;
+				MACOSX_DEPLOYMENT_TARGET = "";
+				ONLY_ACTIVE_ARCH = NO;
+				OTHER_LDFLAGS = (
+					"-framework",
+					Foundation,
+					"-framework",
+					UIKit,
+				);
+				PRODUCT_NAME = "Tests-iOS-Simulator";
+				SDKROOT = iphonesimulator;
+				SKIP_INSTALL = YES;
+				TEST_AFTER_BUILD = YES;
+				WARNING_CFLAGS = (
+					"$(inherited)",
+					"$(OTHER_WARNING_NO_ADDRESS)",
+				);
+				ZERO_LINK = NO;
+			};
+			name = Deployment;
+		};
+		B8A87527175CE8A300968A37 /* Deployment */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ARCHS = "$(ARCHS_STANDARD_32_BIT)";
+				CODE_SIGN_IDENTITY = "iPhone Developer";
+				COPY_PHASE_STRIP = YES;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				GCC_THUMB_SUPPORT = NO;
+				INFOPLIST_FILE = "Resources/Tests-iPhone-Info.plist";
+				INSTALL_PATH = "$(HOME)/Applications";
+				IPHONEOS_DEPLOYMENT_TARGET = 3.0;
+				ONLY_ACTIVE_ARCH = NO;
+				OTHER_LDFLAGS = (
+					"-framework",
+					Foundation,
+					"-framework",
+					UIKit,
+				);
+				PRODUCT_NAME = "Tests-iOS-Device";
+				SDKROOT = iphoneos;
+				SKIP_INSTALL = YES;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				WARNING_CFLAGS = (
+					"$(inherited)",
+					"$(OTHER_WARNING_NO_ADDRESS)",
+				);
+				ZERO_LINK = NO;
+			};
+			name = Deployment;
+		};
+		B8A87528175CE8A300968A37 /* Deployment */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				ARCHS = "$(ARCHS_STANDARD_32_64_BIT)";
+				COMBINE_HIDPI_IMAGES = YES;
+				COPY_PHASE_STRIP = YES;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				EFFECTIVE_PLATFORM_NAME = "-MacOSX";
+				GCC_MODEL_TUNING = G5;
+				GCC_VERSION = com.apple.compilers.llvm.clang.1_0;
+				INFOPLIST_FILE = "Resources/DemoCrash-Info.plist";
+				INSTALL_PATH = "$(HOME)/Applications";
+				LD_RUNPATH_SEARCH_PATHS = "@executable_path/../Frameworks";
+				OTHER_LDFLAGS = (
+					"-framework",
+					Foundation,
+					"-framework",
+					AppKit,
+				);
+				PRODUCT_NAME = DemoCrash;
+				SDKROOT = "";
+				SKIP_INSTALL = YES;
+				ZERO_LINK = NO;
+			};
+			name = Deployment;
+		};
+		B8A87529175CE8A300968A37 /* Deployment */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				ARCHS = "$(ARCHS_STANDARD_32_BIT)";
+				CODE_SIGN_IDENTITY = "iPhone Developer";
+				COPY_PHASE_STRIP = YES;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				FRAMEWORK_SEARCH_PATHS = (
+					"$(inherited)",
+					"$(BUILD_ROOT)",
+				);
+				GCC_THUMB_SUPPORT = NO;
+				INFOPLIST_FILE = "Resources/DemoCrash-Info.plist";
+				INSTALL_PATH = "$(HOME)/Applications";
+				IPHONEOS_DEPLOYMENT_TARGET = 3.0;
+				OTHER_LDFLAGS = (
+					"-framework",
+					Foundation,
+					"-framework",
+					UIKit,
+				);
+				PRODUCT_NAME = "DemoCrash-iOS-Device";
+				SDKROOT = iphoneos;
+				ZERO_LINK = NO;
+			};
+			name = Deployment;
+		};
+		B8A8752A175CE8A300968A37 /* Deployment */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				ARCHS = "$(ARCHS_STANDARD_32_BIT)";
+				CODE_SIGN_IDENTITY = "iPhone Developer";
+				COPY_PHASE_STRIP = YES;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				FRAMEWORK_SEARCH_PATHS = (
+					"$(inherited)",
+					"$(BUILD_ROOT)",
+				);
+				INFOPLIST_FILE = "Resources/DemoCrash-Info.plist";
+				INSTALL_PATH = "$(HOME)/Applications";
+				IPHONEOS_DEPLOYMENT_TARGET = 3.0;
+				MACOSX_DEPLOYMENT_TARGET = "";
+				OTHER_LDFLAGS = (
+					"-framework",
+					Foundation,
+					"-framework",
+					UIKit,
+				);
+				PRODUCT_NAME = "DemoCrash-iOS-Simulator";
+				SDKROOT = iphonesimulator;
+				ZERO_LINK = NO;
+			};
+			name = Deployment;
+		};
+		B8A8752B175CE8A300968A37 /* Deployment */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				COPY_PHASE_STRIP = YES;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				EFFECTIVE_PLATFORM_NAME = "-MacOSX";
+				GCC_MODEL_TUNING = G5;
+				INSTALL_PATH = /usr/local/bin;
+				OTHER_LDFLAGS = (
+					"-framework",
+					Foundation,
+					"-framework",
+					AppKit,
+				);
+				PRODUCT_NAME = "Fuzz Testing";
+				SDKROOT = macosx;
+				ZERO_LINK = NO;
+			};
+			name = Deployment;
+		};
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
@@ -4200,6 +4593,7 @@
 				0502E45B12BD0D0000ACDCB5 /* Debug */,
 				0502E45C12BD0D0000ACDCB5 /* Release */,
 				B86B4105170C9E7B006E0FFA /* Deployment-64-bit */,
+				B8A87524175CE8A300968A37 /* Deployment */,
 				020628BB1754A09700B29160 /* Deployment-32-bit */,
 			);
 			defaultConfigurationIsVisible = 0;
@@ -4211,6 +4605,7 @@
 				050DE24F0F61B80C00152ED3 /* Debug */,
 				050DE2500F61B80C00152ED3 /* Release */,
 				B86B410C170C9E7B006E0FFA /* Deployment-64-bit */,
+				B8A8752B175CE8A300968A37 /* Deployment */,
 				020628C21754A09700B29160 /* Deployment-32-bit */,
 			);
 			defaultConfigurationIsVisible = 0;
@@ -4222,6 +4617,7 @@
 				052A45D2136353FB00987004 /* Debug */,
 				052A45D3136353FB00987004 /* Release */,
 				B86B410A170C9E7B006E0FFA /* Deployment-64-bit */,
+				B8A87529175CE8A300968A37 /* Deployment */,
 				020628C01754A09700B29160 /* Deployment-32-bit */,
 			);
 			defaultConfigurationIsVisible = 0;
@@ -4233,6 +4629,7 @@
 				052A464D136355FD00987004 /* Debug */,
 				052A464E136355FD00987004 /* Release */,
 				B86B410B170C9E7B006E0FFA /* Deployment-64-bit */,
+				B8A8752A175CE8A300968A37 /* Deployment */,
 				020628C11754A09700B29160 /* Deployment-32-bit */,
 			);
 			defaultConfigurationIsVisible = 0;
@@ -4244,6 +4641,7 @@
 				058812BC1040582E009128FB /* Debug */,
 				058812BD1040582E009128FB /* Release */,
 				B86B4101170C9E7B006E0FFA /* Deployment-64-bit */,
+				B8A87520175CE8A300968A37 /* Deployment */,
 				020628B71754A09700B29160 /* Deployment-32-bit */,
 			);
 			defaultConfigurationIsVisible = 0;
@@ -4255,6 +4653,7 @@
 				058812D510405908009128FB /* Debug */,
 				058812D610405908009128FB /* Release */,
 				B86B40FD170C9E7B006E0FFA /* Deployment-64-bit */,
+				B8A8751C175CE8A300968A37 /* Deployment */,
 				020628B31754A09700B29160 /* Deployment-32-bit */,
 			);
 			defaultConfigurationIsVisible = 0;
@@ -4266,6 +4665,7 @@
 				05CD31530EE936AA000FDE88 /* Debug */,
 				05CD31540EE936AA000FDE88 /* Release */,
 				B86B4102170C9E7B006E0FFA /* Deployment-64-bit */,
+				B8A87521175CE8A300968A37 /* Deployment */,
 				020628B81754A09700B29160 /* Deployment-32-bit */,
 			);
 			defaultConfigurationIsVisible = 0;
@@ -4277,6 +4677,7 @@
 				05CD31640EE93906000FDE88 /* Debug */,
 				05CD31650EE93906000FDE88 /* Release */,
 				B86B4103170C9E7B006E0FFA /* Deployment-64-bit */,
+				B8A87522175CE8A300968A37 /* Deployment */,
 				020628B91754A09700B29160 /* Deployment-32-bit */,
 			);
 			defaultConfigurationIsVisible = 0;
@@ -4288,6 +4689,7 @@
 				05CD31690EE939D1000FDE88 /* Debug */,
 				05CD316A0EE939D1000FDE88 /* Release */,
 				B86B40FE170C9E7B006E0FFA /* Deployment-64-bit */,
+				B8A8751D175CE8A300968A37 /* Deployment */,
 				020628B41754A09700B29160 /* Deployment-32-bit */,
 			);
 			defaultConfigurationIsVisible = 0;
@@ -4299,6 +4701,7 @@
 				05CD326B0EE93DC4000FDE88 /* Debug */,
 				05CD326C0EE93DC4000FDE88 /* Release */,
 				B86B4106170C9E7B006E0FFA /* Deployment-64-bit */,
+				B8A87525175CE8A300968A37 /* Deployment */,
 				020628BC1754A09700B29160 /* Deployment-32-bit */,
 			);
 			defaultConfigurationIsVisible = 0;
@@ -4310,6 +4713,7 @@
 				05CD32AC0EE94063000FDE88 /* Debug */,
 				05CD32AD0EE94063000FDE88 /* Release */,
 				B86B4107170C9E7B006E0FFA /* Deployment-64-bit */,
+				B8A87526175CE8A300968A37 /* Deployment */,
 				020628BD1754A09700B29160 /* Deployment-32-bit */,
 			);
 			defaultConfigurationIsVisible = 0;
@@ -4321,6 +4725,7 @@
 				05CD33270EE9443A000FDE88 /* Debug */,
 				05CD33280EE9443A000FDE88 /* Release */,
 				B86B4108170C9E7B006E0FFA /* Deployment-64-bit */,
+				B8A87527175CE8A300968A37 /* Deployment */,
 				020628BE1754A09700B29160 /* Deployment-32-bit */,
 			);
 			defaultConfigurationIsVisible = 0;
@@ -4332,6 +4737,7 @@
 				05E731E50EFA1A3E005EDFB7 /* Debug */,
 				05E731E60EFA1A3E005EDFB7 /* Release */,
 				B86B4104170C9E7B006E0FFA /* Deployment-64-bit */,
+				B8A87523175CE8A300968A37 /* Deployment */,
 				020628BA1754A09700B29160 /* Deployment-32-bit */,
 			);
 			defaultConfigurationIsVisible = 0;
@@ -4343,6 +4749,7 @@
 				05E731F40EFA1AAC005EDFB7 /* Debug */,
 				05E731F50EFA1AAC005EDFB7 /* Release */,
 				B86B40FF170C9E7B006E0FFA /* Deployment-64-bit */,
+				B8A8751E175CE8A300968A37 /* Deployment */,
 				020628B51754A09700B29160 /* Deployment-32-bit */,
 			);
 			defaultConfigurationIsVisible = 0;
@@ -4354,6 +4761,7 @@
 				05F40CEA0EF7AB81008050CF /* Debug */,
 				05F40CEB0EF7AB81008050CF /* Release */,
 				B86B4109170C9E7B006E0FFA /* Deployment-64-bit */,
+				B8A87528175CE8A300968A37 /* Deployment */,
 				020628BF1754A09700B29160 /* Deployment-32-bit */,
 			);
 			defaultConfigurationIsVisible = 0;
@@ -4365,6 +4773,7 @@
 				1DEB91AE08733DA50010E9CD /* Debug */,
 				1DEB91AF08733DA50010E9CD /* Release */,
 				B86B4100170C9E7B006E0FFA /* Deployment-64-bit */,
+				B8A8751F175CE8A300968A37 /* Deployment */,
 				020628B61754A09700B29160 /* Deployment-32-bit */,
 			);
 			defaultConfigurationIsVisible = 0;
@@ -4376,6 +4785,7 @@
 				1DEB91B208733DA50010E9CD /* Debug */,
 				1DEB91B308733DA50010E9CD /* Release */,
 				B86B40FC170C9E7B006E0FFA /* Deployment-64-bit */,
+				B8A8751B175CE8A300968A37 /* Deployment */,
 				020628B21754A09700B29160 /* Deployment-32-bit */,
 			);
 			defaultConfigurationIsVisible = 0;
