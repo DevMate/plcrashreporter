@@ -37,6 +37,10 @@
 - (void)didGenerateCrashReport:(NSData *)crashReport reporter:(PLCrashReporter *)reporter;
 - (void)didGenerateExceptionReport:(NSData *)exceptionReport reporter:(PLCrashReporter *)reporter;
 
+@optional
+- (void)didFailedGenerateCrashReport:(NSError *)error reporter:(PLCrashReporter *)report;
+- (void)didFailedGenerateExceptionReport:(NSError *)error reporter:(PLCrashReporter *)report;
+
 @end
 
 /**
