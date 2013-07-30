@@ -2634,6 +2634,7 @@
 			isa = XCBuildConfiguration;
 			baseConfigurationReference = 020628C61754A53800B29160 /* 32bit.xcconfig */;
 			buildSettings = {
+				CODE_SIGN_IDENTITY = "3rd Party Mac Developer Application";
 				CURRENT_PROJECT_VERSION = "2.0-beta1";
 				GCC_C_LANGUAGE_STANDARD = c99;
 				GCC_GENERATE_DEBUGGING_SYMBOLS = NO;
@@ -2648,6 +2649,7 @@
 					"-D$(PL_BUILD_CONFIG_FLAG)=1",
 				);
 				PL_BUILD_CONFIG_FLAG = PLCF_RELEASE_BUILD;
+				PROVISIONING_PROFILE = "";
 				SDKROOT = macosx;
 				WARNING_CFLAGS = (
 					"-Wall",
@@ -3757,6 +3759,7 @@
 			isa = XCBuildConfiguration;
 			baseConfigurationReference = 020628C71754A54600B29160 /* 64bit.xcconfig */;
 			buildSettings = {
+				CODE_SIGN_IDENTITY = "Mac Developer";
 				CURRENT_PROJECT_VERSION = "2.0-beta1";
 				GCC_C_LANGUAGE_STANDARD = c99;
 				GCC_OPTIMIZATION_LEVEL = 0;
@@ -3769,6 +3772,7 @@
 					"-D$(PL_BUILD_CONFIG_FLAG)=1",
 				);
 				PL_BUILD_CONFIG_FLAG = PLCF_DEBUG_BUILD;
+				PROVISIONING_PROFILE = "";
 				SDKROOT = macosx;
 				WARNING_CFLAGS = (
 					"-Wall",
@@ -3780,6 +3784,7 @@
 		1DEB91B308733DA50010E9CD /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				CODE_SIGN_IDENTITY = "Mac Developer";
 				CURRENT_PROJECT_VERSION = "2.0-beta1";
 				GCC_C_LANGUAGE_STANDARD = c99;
 				GCC_GENERATE_DEBUGGING_SYMBOLS = NO;
@@ -3794,6 +3799,7 @@
 					"-D$(PL_BUILD_CONFIG_FLAG)=1",
 				);
 				PL_BUILD_CONFIG_FLAG = PLCF_RELEASE_BUILD;
+				PROVISIONING_PROFILE = "";
 				SDKROOT = macosx;
 				WARNING_CFLAGS = (
 					"-Wall",
@@ -3806,6 +3812,7 @@
 			isa = XCBuildConfiguration;
 			baseConfigurationReference = 020628C71754A54600B29160 /* 64bit.xcconfig */;
 			buildSettings = {
+				CODE_SIGN_IDENTITY = "3rd Party Mac Developer Application";
 				CURRENT_PROJECT_VERSION = "2.0-beta1";
 				GCC_C_LANGUAGE_STANDARD = c99;
 				GCC_GENERATE_DEBUGGING_SYMBOLS = NO;
@@ -3820,6 +3827,7 @@
 					"-D$(PL_BUILD_CONFIG_FLAG)=1",
 				);
 				PL_BUILD_CONFIG_FLAG = PLCF_RELEASE_BUILD;
+				PROVISIONING_PROFILE = "";
 				SDKROOT = macosx;
 				WARNING_CFLAGS = (
 					"-Wall",
@@ -4197,6 +4205,7 @@
 			isa = XCBuildConfiguration;
 			baseConfigurationReference = B8A87519175CE74900968A37 /* Universal.xcconfig */;
 			buildSettings = {
+				CODE_SIGN_IDENTITY = "3rd Party Mac Developer Application";
 				CURRENT_PROJECT_VERSION = "2.0-beta1";
 				GCC_C_LANGUAGE_STANDARD = c99;
 				GCC_GENERATE_DEBUGGING_SYMBOLS = NO;
@@ -4211,6 +4220,7 @@
 					"-D$(PL_BUILD_CONFIG_FLAG)=1",
 				);
 				PL_BUILD_CONFIG_FLAG = PLCF_RELEASE_BUILD;
+				PROVISIONING_PROFILE = "";
 				SDKROOT = macosx;
 				WARNING_CFLAGS = (
 					"-Wall",
