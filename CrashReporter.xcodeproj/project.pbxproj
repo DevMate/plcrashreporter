@@ -2634,7 +2634,7 @@
 			isa = XCBuildConfiguration;
 			baseConfigurationReference = 020628C61754A53800B29160 /* 32bit.xcconfig */;
 			buildSettings = {
-				CODE_SIGN_IDENTITY = "3rd Party Mac Developer Application";
+				CODE_SIGN_IDENTITY = "Developer ID Application: MacPaw Inc.";
 				CURRENT_PROJECT_VERSION = "2.0-beta1";
 				GCC_C_LANGUAGE_STANDARD = c99;
 				GCC_GENERATE_DEBUGGING_SYMBOLS = NO;
@@ -3759,7 +3759,6 @@
 			isa = XCBuildConfiguration;
 			baseConfigurationReference = 020628C71754A54600B29160 /* 64bit.xcconfig */;
 			buildSettings = {
-				CODE_SIGN_IDENTITY = "Mac Developer";
 				CURRENT_PROJECT_VERSION = "2.0-beta1";
 				GCC_C_LANGUAGE_STANDARD = c99;
 				GCC_OPTIMIZATION_LEVEL = 0;
@@ -3784,7 +3783,7 @@
 		1DEB91B308733DA50010E9CD /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				CODE_SIGN_IDENTITY = "Mac Developer";
+				CODE_SIGN_IDENTITY = "Developer ID Application: MacPaw Inc.";
 				CURRENT_PROJECT_VERSION = "2.0-beta1";
 				GCC_C_LANGUAGE_STANDARD = c99;
 				GCC_GENERATE_DEBUGGING_SYMBOLS = NO;
@@ -3812,7 +3811,7 @@
 			isa = XCBuildConfiguration;
 			baseConfigurationReference = 020628C71754A54600B29160 /* 64bit.xcconfig */;
 			buildSettings = {
-				CODE_SIGN_IDENTITY = "3rd Party Mac Developer Application";
+				CODE_SIGN_IDENTITY = "Developer ID Application: MacPaw Inc.";
 				CURRENT_PROJECT_VERSION = "2.0-beta1";
 				GCC_C_LANGUAGE_STANDARD = c99;
 				GCC_GENERATE_DEBUGGING_SYMBOLS = NO;
@@ -4205,7 +4204,7 @@
 			isa = XCBuildConfiguration;
 			baseConfigurationReference = B8A87519175CE74900968A37 /* Universal.xcconfig */;
 			buildSettings = {
-				CODE_SIGN_IDENTITY = "3rd Party Mac Developer Application";
+				CODE_SIGN_IDENTITY = "Developer ID Application: MacPaw Inc.";
 				CURRENT_PROJECT_VERSION = "2.0-beta1";
 				GCC_C_LANGUAGE_STANDARD = c99;
 				GCC_GENERATE_DEBUGGING_SYMBOLS = NO;
