@@ -698,17 +698,15 @@ error:
  * @param description A localized error description.
  * @param cause The underlying cause, if any. May be nil.
  */
-static void populate_nserror (NSError **error, PLCrashReporterError code, NSString *description) {
-    NSMutableDictionary *userInfo;
-    
+static void populate_nserror (NSError **error, PLCrashReporterError code, NSString *description)
+{
     if (error == NULL)
         return;
     
     /* Create the userInfo dictionary */
-    userInfo = [NSDictionary dictionaryWithObjectsAndKeys:
-                description, NSLocalizedDescriptionKey,
-                nil
-                ];
+    NSDictionary *userInfo = [NSDictionary dictionaryWithObjectsAndKeys:
+                              description, NSLocalizedDescriptionKey,
+                              nil];
     
     *error = [NSError errorWithDomain: PLCrashReporterErrorDomain code: code userInfo: userInfo];
 }

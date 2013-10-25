@@ -41,8 +41,6 @@
  */
 #ifndef CPU_SUBTYPE_ARM_V7S
 # define CPU_SUBTYPE_ARM_V7S 11
-#elif !TARGET_OS_IPHONE
-# error CPU_SUBTYPE_ARM_V7S is now defined by the SDK. Please remove this define.
 #endif
 
 
@@ -442,7 +440,7 @@ static NSString *uuidSeparator = @"-";
         }
         else
         {
-            binaryName = [imageBundle.bundleIdentifier copy];
+            binaryName = [[imageBundle.bundleIdentifier copy] autorelease];
         }
         
         [text appendFormat: fmt,
@@ -526,7 +524,7 @@ static NSString *uuidSeparator = @"-";
         }
         else
         {
-            imageName = [imageBundle.bundleIdentifier copy];
+            imageName = [[imageBundle.bundleIdentifier copy] autorelease];
         }
         
         baseAddress = imageInfo.imageBaseAddress;

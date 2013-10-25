@@ -3759,6 +3759,7 @@
 			isa = XCBuildConfiguration;
 			baseConfigurationReference = 020628C71754A54600B29160 /* 64bit.xcconfig */;
 			buildSettings = {
+				CODE_SIGN_IDENTITY = "Mac Developer";
 				CURRENT_PROJECT_VERSION = "2.0-beta1";
 				GCC_C_LANGUAGE_STANDARD = c99;
 				GCC_OPTIMIZATION_LEVEL = 0;
