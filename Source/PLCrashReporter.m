@@ -455,7 +455,7 @@ static void uncaught_exception_handler (NSException *exception) {
 {
     @synchronized (self)
     {
-        NSLog(@"generating reoprt started...");
+        NSLog(@"generating report started...");
         
         plcrash_async_file_t file;
         
