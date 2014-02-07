@@ -3331,8 +3331,7 @@
 				GCC_MODEL_TUNING = G5;
 				GCC_OPTIMIZATION_LEVEL = 0;
 				INFOPLIST_FILE = Resources/Info.plist;
-				INSTALL_PATH = "@rpath";
-				LD_DYLIB_INSTALL_NAME = "$(DYLIB_INSTALL_NAME_BASE:standardizepath)/DevMateProblemReporter.framework/Versions/A/Frameworks/$(EXECUTABLE_PATH)";
+				INSTALL_PATH = "@loader_path/Frameworks";
 				PRODUCT_NAME = CrashReporter;
 				SDKROOT = macosx;
 				WRAPPER_EXTENSION = framework;
@@ -3354,8 +3353,7 @@
 				FRAMEWORK_VERSION = A;
 				GCC_MODEL_TUNING = G5;
 				INFOPLIST_FILE = Resources/Info.plist;
-				INSTALL_PATH = "@rpath";
-				LD_DYLIB_INSTALL_NAME = "$(DYLIB_INSTALL_NAME_BASE:standardizepath)/DevMateProblemReporter.framework/Versions/A/Frameworks/$(EXECUTABLE_PATH)";
+				INSTALL_PATH = "@loader_path/Frameworks";
 				PRODUCT_NAME = CrashReporter;
 				SDKROOT = macosx;
 				WRAPPER_EXTENSION = framework;
@@ -3506,8 +3504,7 @@
 				FRAMEWORK_VERSION = A;
 				GCC_MODEL_TUNING = G5;
 				INFOPLIST_FILE = Resources/Info.plist;
-				INSTALL_PATH = "@rpath";
-				LD_DYLIB_INSTALL_NAME = "$(DYLIB_INSTALL_NAME_BASE:standardizepath)/DevMateProblemReporter.framework/Versions/A/Frameworks/$(EXECUTABLE_PATH)";
+				INSTALL_PATH = "@loader_path/Frameworks";
 				PRODUCT_NAME = CrashReporter;
 				SDKROOT = macosx;
 				WRAPPER_EXTENSION = framework;
