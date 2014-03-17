@@ -3334,6 +3334,7 @@
 				INSTALL_PATH = "@loader_path/Frameworks";
 				PRODUCT_NAME = CrashReporter;
 				SDKROOT = macosx;
+				WARNING_CFLAGS = "-Wall";
 				WRAPPER_EXTENSION = framework;
 			};
 			name = Debug;
@@ -3355,6 +3356,7 @@
 				INSTALL_PATH = "@loader_path/Frameworks";
 				PRODUCT_NAME = CrashReporter;
 				SDKROOT = macosx;
+				WARNING_CFLAGS = "-Wall";
 				WRAPPER_EXTENSION = framework;
 			};
 			name = Release;
@@ -3506,6 +3508,7 @@
 				INSTALL_PATH = "@loader_path/Frameworks";
 				PRODUCT_NAME = CrashReporter;
 				SDKROOT = macosx;
+				WARNING_CFLAGS = "-Wall";
 				WRAPPER_EXTENSION = framework;
 			};
 			name = Deployment;
