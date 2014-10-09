@@ -32,17 +32,7 @@
 #import "CrashReporter/CrashReporter.h"
 
 #import "PLCrashReportTextFormatter.h"
-
-#define REPORT_VERSION @"106"
-
-/*
- * XXX: The ARM_V7S Mach-O CPU subtype is not defined in the Mac OS X 10.8
- * headers.
- */
-#ifndef CPU_SUBTYPE_ARM_V7S
-# define CPU_SUBTYPE_ARM_V7S 11
-#endif
-
+#import "PLCrashCompatConstants.h"
 
 @interface PLCrashReportTextFormatter (PrivateAPI)
 NSInteger binaryImageSort(id binary1, id binary2, void *context);
@@ -124,6 +114,11 @@ static NSString *uuidSeparator = @"-";
                     codeType = @"ARM";
                     lp64 = false;
                     break;
+                    
+                case CPU_TYPE_ARM64:
+                    codeType = @"ARM-64";
+                    lp64 = true;
+                    break;
 
                 case CPU_TYPE_X86:
                     codeType = @"X86";
@@ -150,31 +145,45 @@ static NSString *uuidSeparator = @"-";
                 break;
         }
 
-        /* If we were unable to determine the code type, fall back on the legacy architecture value. */
-        if (codeType == nil) {
-            switch (report.systemInfo.architecture) {
-                case PLCrashReportArchitectureARMv6:
-                case PLCrashReportArchitectureARMv7:
+        /* If we were unable to determine the code type, fall back on the processor info's value. */
+        if (codeType == nil && report.systemInfo.processorInfo.typeEncoding == PLCrashReportProcessorTypeEncodingMach) {
+            switch (report.systemInfo.processorInfo.type) {
+                case CPU_TYPE_ARM:
                     codeType = @"ARM";
                     lp64 = false;
                     break;
-                case PLCrashReportArchitectureX86_32:
+
+                case CPU_TYPE_ARM64:
+                    codeType = @"ARM-64";
+                    lp64 = true;
+                    break;
+
+                case CPU_TYPE_X86:
                     codeType = @"X86";
                     lp64 = false;
                     break;
-                case PLCrashReportArchitectureX86_64:
+
+                case CPU_TYPE_X86_64:
                     codeType = @"X86-64";
                     lp64 = true;
                     break;
-                case PLCrashReportArchitecturePPC:
+
+                case CPU_TYPE_POWERPC:
                     codeType = @"PPC";
                     lp64 = false;
                     break;
+
                 default:
-                    codeType = [NSString stringWithFormat: @"Unknown (%d)", report.systemInfo.architecture];
+                    codeType = [NSString stringWithFormat: @"Unknown (%llu)", report.systemInfo.processorInfo.type];
                     lp64 = true;
                     break;
             }
+        }
+        
+        /* If we still haven't determined the code type, we're totally clueless. */
+        if (codeType == nil) {
+            codeType = @"Unknown";
+            lp64 = true;
         }
     }
 
@@ -183,8 +192,14 @@ static NSString *uuidSeparator = @"-";
         if (report.hasMachineInfo && report.machineInfo.modelName != nil)
             hardwareModel = report.machineInfo.modelName;
 
-        //[text appendFormat: @"Incident Identifier: TODO\n"];
-        //[text appendFormat: @"CrashReporter Key:   TODO\n"];
+        NSString *incidentIdentifier = @"???";
+        if (report.uuidRef != NULL) {
+            incidentIdentifier = (NSString *) CFUUIDCreateString(NULL, report.uuidRef);
+            [incidentIdentifier autorelease];
+        }
+    
+        [text appendFormat: @"Incident Identifier: %@\n", incidentIdentifier];
+        [text appendFormat: @"CrashReporter Key:   TODO\n"];
         [text appendFormat: @"Hardware Model:      %@\n", hardwareModel];
     }
     
@@ -391,6 +406,23 @@ static NSString *uuidSeparator = @"-";
 
                         default:
                             archName = @"arm-unknown";
+                            break;
+                    }
+                    break;
+                    
+                case CPU_TYPE_ARM64:
+                    /* Apple includes subtype for ARM64 binaries. */
+                    switch (imageInfo.codeType.subtype) {
+                        case CPU_SUBTYPE_ARM_ALL:
+                            archName = @"arm64";
+                            break;
+
+                        case CPU_SUBTYPE_ARM_V8:
+                            archName = @"armv8";
+                            break;
+
+                        default:
+                            archName = @"arm64-unknown";
                             break;
                     }
                     break;

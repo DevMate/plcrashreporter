@@ -30,6 +30,8 @@
 #import <mach/mach.h>
 
 @class PLCrashReporter;
+#import "PLCrashReporterConfig.h"
+#import "PLCrashMacros.h"
 
 @protocol PLCrashReporterDelegate <NSObject>
 
@@ -42,6 +44,8 @@
 - (void)didFailedGenerateExceptionReport:(NSError *)error reporter:(PLCrashReporter *)report;
 
 @end
+@class PLCrashMachExceptionServer;
+@class PLCrashMachExceptionPortSet;
 
 /**
  * @ingroup functions
@@ -53,7 +57,7 @@
  * @param uap The crash's threads context.
  * @param context The API client's supplied context value.
  *
- * @sa @ref async_safety
+ * @sa The @ref async_safety documentation.
  * @sa PLCrashReporter::setPostCrashCallbacks:
  */
 typedef void (*PLCrashReporterPostCrashSignalCallback)(siginfo_t *info, ucontext_t *uap, void *context);
@@ -64,7 +68,7 @@ typedef void (*PLCrashReporterPostCrashSignalCallback)(siginfo_t *info, ucontext
  * This structure contains callbacks supported by PLCrashReporter to allow the host application to perform
  * additional tasks prior to program termination after a crash has occured.
  *
- * @sa @ref async_safety
+ * @sa The @ref async_safety documentation.
  */
 typedef struct PLCrashReporterCallbacks {
     /** The version number of this structure. If not one of the defined version numbers for this type, the behavior
@@ -74,8 +78,18 @@ typedef struct PLCrashReporterCallbacks {
     /** An arbitrary user-supplied context value. This value may be NULL. */
     void *context;
 
-    /** The callback used to report caught signal information. In version 0 of this structure, all crashes will be
-     * reported via this function. */
+    /**
+     * The callback used to report caught signal information. In version 0 of this structure, all crashes will be
+     * reported via this function.
+     *
+     * @warning When using PLCrashReporterSignalHandlerTypeMach, the siginfo_t argument to this function will be derived
+     * from the Mach exception data, and may be incorrect, or may otherwise not match the expected data as provided via
+     * PLCrashReporterSignalHandlerTypeBSD. In addition, the provided ucontext_t value will be zero-initialized, and will
+     * not provide valid thread state.
+     *
+     * This callback will be deprecated in favor of a Mach-compatible replacement in a future release; support is maintained
+     * here to allow clients that rely on post-crash callbacks without thread state to make use of Mach exceptions.
+     */
     PLCrashReporterPostCrashSignalCallback handleSignal;
 } PLCrashReporterCallbacks;
 
@@ -84,8 +98,20 @@ typedef struct PLCrashReporterCallbacks {
     id<PLCrashReporterDelegate> delegate;
     
 @private
+    /** Reporter configuration */
+    PLCrashReporterConfig *_config;
+
     /** YES if the crash reporter has been enabled */
     BOOL _enabled;
+    
+#if PLCRASH_FEATURE_MACH_EXCEPTIONS
+    /** The backing Mach exception server, if any. Nil if the reporter has not been enabled, or if
+     * the configured signal handler type is not PLCrashReporterSignalHandlerTypeMach. */
+    PLCrashMachExceptionServer *_machServer;
+    
+    /** Previously registered Mach exception ports, if any. */
+    PLCrashMachExceptionPortSet *_previousMachPorts;
+#endif /* PLCRASH_FEATURE_MACH_EXCEPTIONS */
 
     /** Application identifier */
     NSString *_applicationIdentifier;
@@ -97,9 +123,10 @@ typedef struct PLCrashReporterCallbacks {
     NSString *_crashReportDirectory;
 }
 
-+ (PLCrashReporter *) sharedReporter;
++ (PLCrashReporter *) sharedReporter PLCR_DEPRECATED;
 
 @property (assign) id<PLCrashReporterDelegate> delegate;
+- (instancetype) initWithConfiguration: (PLCrashReporterConfig *) config;
 
 - (BOOL) hasPendingCrashReport;
 
@@ -125,5 +152,4 @@ typedef struct PLCrashReporterCallbacks {
 - (void) enableHandlingUncaughtExceptions;
 
 - (void) setCrashCallbacks: (PLCrashReporterCallbacks *) callbacks;
-
 @end
