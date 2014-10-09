@@ -29,23 +29,12 @@
 #import <Foundation/Foundation.h>
 #import <mach/mach.h>
 
-@class PLCrashReporter;
 #import "PLCrashReporterConfig.h"
 #import "PLCrashMacros.h"
 
-@protocol PLCrashReporterDelegate <NSObject>
-
-@required
-- (void)didGenerateCrashReport:(NSData *)crashReport reporter:(PLCrashReporter *)reporter;
-- (void)didGenerateExceptionReport:(NSData *)exceptionReport reporter:(PLCrashReporter *)reporter;
-
-@optional
-- (void)didFailedGenerateCrashReport:(NSError *)error reporter:(PLCrashReporter *)report;
-- (void)didFailedGenerateExceptionReport:(NSError *)error reporter:(PLCrashReporter *)report;
-
-@end
 @class PLCrashMachExceptionServer;
 @class PLCrashMachExceptionPortSet;
+@protocol PLCrashReporterDelegate;
 
 /**
  * @ingroup functions
@@ -124,9 +113,9 @@ typedef struct PLCrashReporterCallbacks {
 }
 
 + (PLCrashReporter *) sharedReporter PLCR_DEPRECATED;
-
-@property (assign) id<PLCrashReporterDelegate> delegate;
 - (instancetype) initWithConfiguration: (PLCrashReporterConfig *) config;
+
+@property (nonatomic, assign) id<PLCrashReporterDelegate> delegate;
 
 - (BOOL) hasPendingCrashReport;
 
@@ -152,4 +141,15 @@ typedef struct PLCrashReporterCallbacks {
 - (void) enableHandlingUncaughtExceptions;
 
 - (void) setCrashCallbacks: (PLCrashReporterCallbacks *) callbacks;
+@end
+
+@protocol PLCrashReporterDelegate <NSObject>
+@optional
+
+- (void)didGenerateCrashReport:(NSData *)crashReport reporter:(PLCrashReporter *)reporter;
+- (void)didGenerateExceptionReport:(NSData *)exceptionReport reporter:(PLCrashReporter *)reporter;
+
+- (void)didFailedGenerateCrashReport:(NSError *)error reporter:(PLCrashReporter *)report;
+- (void)didFailedGenerateExceptionReport:(NSError *)error reporter:(PLCrashReporter *)report;
+
 @end
