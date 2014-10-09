@@ -2573,7 +2573,7 @@
 			name = "Tests-MacOSX";
 			productName = "Tests-MacOSX";
 			productReference = 05CD32690EE93DC3000FDE88 /* Tests-MacOSX.octest */;
-			productType = "com.apple.product-type.bundle";
+			productType = "com.apple.product-type.bundle.ocunit-test";
 		};
 		05CD32A80EE94062000FDE88 /* Tests-iOS-Simulator */ = {
 			isa = PBXNativeTarget;
@@ -4322,7 +4322,6 @@
 				CONFIGURATION_BUILD_DIR = "$(BUILD_DIR)/$(CONFIGURATION)";
 				CONFIGURATION_TEMP_DIR = "$(PROJECT_TEMP_DIR)/$(CONFIGURATION)";
 				COPY_PHASE_STRIP = NO;
-				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
 				DYLIB_COMPATIBILITY_VERSION = 1;
 				DYLIB_CURRENT_VERSION = 1;
 				EFFECTIVE_PLATFORM_NAME = "-MacOSX";
@@ -4334,14 +4333,13 @@
 				GCC_OPTIMIZATION_LEVEL = 0;
 				INFOPLIST_FILE = Resources/Info.plist;
 				INSTALL_PATH = "@loader_path/Frameworks";
-				PRODUCT_NAME = CrashReporter;
-				SDKROOT = macosx;
-				WARNING_CFLAGS = "-Wall";
 				OTHER_CFLAGS = (
 					"$(inherited)",
 					"-DPLCF_MIN_MACOSX_SDK=$(PL_MIN_MACOSX_SDK)",
 				);
+				PRODUCT_NAME = CrashReporter;
 				SKIP_INSTALL = YES;
+				WARNING_CFLAGS = "-Wall";
 				WRAPPER_EXTENSION = framework;
 			};
 			name = Debug;
@@ -4362,14 +4360,13 @@
 				GCC_MODEL_TUNING = G5;
 				INFOPLIST_FILE = Resources/Info.plist;
 				INSTALL_PATH = "@loader_path/Frameworks";
-				PRODUCT_NAME = CrashReporter;
-				SDKROOT = macosx;
-				WARNING_CFLAGS = "-Wall";
 				OTHER_CFLAGS = (
 					"$(inherited)",
 					"-DPLCF_MIN_MACOSX_SDK=$(PL_MIN_MACOSX_SDK)",
 				);
+				PRODUCT_NAME = CrashReporter;
 				SKIP_INSTALL = YES;
+				WARNING_CFLAGS = "-Wall";
 				WRAPPER_EXTENSION = framework;
 			};
 			name = Release;
@@ -4378,11 +4375,11 @@
 			isa = XCBuildConfiguration;
 			baseConfigurationReference = 020628C71754A54600B29160 /* 64bit.xcconfig */;
 			buildSettings = {
-				CODE_SIGN_IDENTITY = "Mac Developer";
-				DEBUG_INFORMATION_FORMAT = dwarf;
 				CLANG_CXX_LANGUAGE_STANDARD = "c++0x";
 				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
-				CURRENT_PROJECT_VERSION = "1.2";
+				CODE_SIGN_IDENTITY = "Mac Developer";
+				CURRENT_PROJECT_VERSION = 1.2;
+				DEBUG_INFORMATION_FORMAT = dwarf;
 				GCC_C_LANGUAGE_STANDARD = c99;
 				GCC_ENABLE_CPP_EXCEPTIONS = NO;
 				GCC_OPTIMIZATION_LEVEL = 0;
@@ -4398,9 +4395,9 @@
 				);
 				PL_ARM_ARCHS = "armv7 armv7s arm64";
 				PL_BUILD_CONFIG_FLAG = PLCF_DEBUG_BUILD;
+				PL_MIN_MACOSX_SDK = 1080;
 				PROVISIONING_PROFILE = "";
 				SDKROOT = macosx;
-				PL_MIN_MACOSX_SDK = 1080;
 				VALID_ARCHS = "i386 ppc armv7 armv7s armv6 x86_64 arm64";
 				WARNING_CFLAGS = (
 					"-Wall",
@@ -4414,11 +4411,11 @@
 			isa = XCBuildConfiguration;
 			baseConfigurationReference = 020628C71754A54600B29160 /* 64bit.xcconfig */;
 			buildSettings = {
-				CODE_SIGN_IDENTITY = "Developer ID Application";
-				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
 				CLANG_CXX_LANGUAGE_STANDARD = "c++0x";
 				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
-				CURRENT_PROJECT_VERSION = "1.2";
+				CODE_SIGN_IDENTITY = "Developer ID Application";
+				CURRENT_PROJECT_VERSION = 1.2;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
 				GCC_C_LANGUAGE_STANDARD = c99;
 				GCC_ENABLE_CPP_EXCEPTIONS = NO;
 				GCC_GENERATE_DEBUGGING_SYMBOLS = NO;
@@ -4436,8 +4433,8 @@
 				);
 				PL_ARM_ARCHS = "armv7 armv7s arm64";
 				PL_BUILD_CONFIG_FLAG = PLCF_RELEASE_BUILD;
-				PROVISIONING_PROFILE = "";
 				PL_MIN_MACOSX_SDK = 1080;
+				PROVISIONING_PROFILE = "";
 				SDKROOT = macosx;
 				VALID_ARCHS = "i386 ppc armv7 armv7s armv6 x86_64 arm64";
 				WARNING_CFLAGS = (
@@ -4456,7 +4453,7 @@
 				CURRENT_PROJECT_VERSION = "2.0-beta1";
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
 				GCC_C_LANGUAGE_STANDARD = c99;
-				GCC_PREFIX_HEADER = "$(SRCROOT)/Source/PLCrashReporterNamespace.h";
+				GCC_PREFIX_HEADER = "$(SRCROOT)/Source/PLCrashNamespace.h";
 				HEADER_SEARCH_PATHS = (
 					"\"$(SRCROOT)/$(DERIVED_FILES_DIR)\"",
 					"\"$(SRCROOT)/Dependencies/protobuf-2.0.3/include\"",
@@ -4539,7 +4536,6 @@
 				INFOPLIST_FILE = Resources/Info.plist;
 				INSTALL_PATH = "@loader_path/Frameworks";
 				PRODUCT_NAME = CrashReporter;
-				SDKROOT = macosx;
 				WARNING_CFLAGS = "-Wall";
 				WRAPPER_EXTENSION = framework;
 			};
