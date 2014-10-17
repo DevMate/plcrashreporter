@@ -277,6 +277,8 @@ static plcrash_error_t plcrash_write_report (plcrashreporter_handler_ctx_t *sigc
  * Signal handler callback.
  */
 static bool signal_handler_callback (int signal, siginfo_t *info, pl_ucontext_t *uap, void *context, PLCrashSignalHandlerCallback *next) {
+    NSLog(@"Handling crash with signal %d...", signal);
+    
     plcrashreporter_handler_ctx_t *sigctx = context;
     plcrash_async_thread_state_t thread_state;
     plcrash_log_signal_info_t signal_info;
@@ -447,7 +449,7 @@ static void image_remove_callback (const struct mach_header *mh, intptr_t vmaddr
  */
 static void uncaught_exception_handler (NSException *exception) {
     
-    NSLog(@"Handling uncaught exception");
+    NSLog(@"Handling uncaught exception...");
     // ignore universal access exceptions
     if ([[exception name] isEqual:NSAccessibilityException])
     {
