@@ -294,8 +294,8 @@
 		05A533DE16D6ACBF00C5E2B3 /* PLCrashFrameStackUnwindTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 05A533DD16D6ACBF00C5E2B3 /* PLCrashFrameStackUnwindTests.m */; };
 		05A533DF16D6ACBF00C5E2B3 /* PLCrashFrameStackUnwindTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 05A533DD16D6ACBF00C5E2B3 /* PLCrashFrameStackUnwindTests.m */; };
 		05A533E016D6ACBF00C5E2B3 /* PLCrashFrameStackUnwindTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 05A533DD16D6ACBF00C5E2B3 /* PLCrashFrameStackUnwindTests.m */; };
-		05A5E28117A82751008A75E5 /* PLCrashMacros.h in Headers */ = {isa = PBXBuildFile; fileRef = 05A5E28017A82751008A75E5 /* PLCrashMacros.h */; };
-		05A5E28217A82751008A75E5 /* PLCrashMacros.h in Headers */ = {isa = PBXBuildFile; fileRef = 05A5E28017A82751008A75E5 /* PLCrashMacros.h */; };
+		05A5E28117A82751008A75E5 /* PLCrashMacros.h in Headers */ = {isa = PBXBuildFile; fileRef = 05A5E28017A82751008A75E5 /* PLCrashMacros.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		05A5E28217A82751008A75E5 /* PLCrashMacros.h in Headers */ = {isa = PBXBuildFile; fileRef = 05A5E28017A82751008A75E5 /* PLCrashMacros.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		05A5E28817C04188008A75E5 /* PLCrashAsyncLinkedList.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 05A5E28617C04188008A75E5 /* PLCrashAsyncLinkedList.cpp */; };
 		05A5E28917C04188008A75E5 /* PLCrashAsyncLinkedList.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 05A5E28617C04188008A75E5 /* PLCrashAsyncLinkedList.cpp */; };
 		05A5E28A17C04188008A75E5 /* PLCrashAsyncLinkedList.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 05A5E28617C04188008A75E5 /* PLCrashAsyncLinkedList.cpp */; };
@@ -4332,7 +4332,7 @@
 				GCC_MODEL_TUNING = G5;
 				GCC_OPTIMIZATION_LEVEL = 0;
 				INFOPLIST_FILE = Resources/Info.plist;
-				INSTALL_PATH = "@loader_path/Frameworks";
+				INSTALL_PATH = "@rpath";
 				OTHER_CFLAGS = (
 					"$(inherited)",
 					"-DPLCF_MIN_MACOSX_SDK=$(PL_MIN_MACOSX_SDK)",
@@ -4359,7 +4359,7 @@
 				GCC_GENERATE_DEBUGGING_SYMBOLS = YES;
 				GCC_MODEL_TUNING = G5;
 				INFOPLIST_FILE = Resources/Info.plist;
-				INSTALL_PATH = "@loader_path/Frameworks";
+				INSTALL_PATH = "@rpath";
 				OTHER_CFLAGS = (
 					"$(inherited)",
 					"-DPLCF_MIN_MACOSX_SDK=$(PL_MIN_MACOSX_SDK)",
@@ -4534,7 +4534,7 @@
 				FRAMEWORK_VERSION = A;
 				GCC_MODEL_TUNING = G5;
 				INFOPLIST_FILE = Resources/Info.plist;
-				INSTALL_PATH = "@loader_path/Frameworks";
+				INSTALL_PATH = "@rpath";
 				PRODUCT_NAME = CrashReporter;
 				WARNING_CFLAGS = "-Wall";
 				WRAPPER_EXTENSION = framework;
