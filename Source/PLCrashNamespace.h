@@ -37,6 +37,8 @@
  */
 // #define PLCRASHREPORTER_PREFIX AcmeCo
 
+#define PLCRASHREPORTER_PREFIX DM_
+
 #ifdef PLCRASHREPORTER_PREFIX
 
 // We need two extra layers of indirection to make CPP substitute
