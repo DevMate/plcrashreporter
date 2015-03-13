@@ -54,6 +54,10 @@
     NSLog(@"[PLCrashReporter] " msg, ## args); \
 }
 
+#ifdef PLCRASHREPORTER_PREFIX
+#   define _PLCrashReporterStorage PLNS(_PLCrashReporterStorage)
+#endif
+
 @interface _PLCrashReporterStorage : NSObject
 
 + (void)addCrashReporter:(PLCrashReporter *)reporter;
