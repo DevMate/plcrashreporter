@@ -92,7 +92,7 @@ typedef struct PLCrashReporterCallbacks {
 
     /** YES if the crash reporter has been enabled */
     BOOL _enabled;
-    
+
 #if PLCRASH_FEATURE_MACH_EXCEPTIONS
     /** The backing Mach exception server, if any. Nil if the reporter has not been enabled, or if
      * the configured signal handler type is not PLCrashReporterSignalHandlerTypeMach. */
@@ -107,12 +107,16 @@ typedef struct PLCrashReporterCallbacks {
 
     /** Application version */
     NSString *_applicationVersion;
+    
+    /** Application marketing version */
+    NSString *_applicationMarketingVersion;
 
     /** Path to the crash reporter internal data directory */
     NSString *_crashReportDirectory;
 }
 
 + (PLCrashReporter *) sharedReporter PLCR_DEPRECATED;
+
 - (instancetype) initWithConfiguration: (PLCrashReporterConfig *) config;
 
 @property (nonatomic, assign) id<PLCrashReporterDelegate> delegate;
@@ -124,11 +128,11 @@ typedef struct PLCrashReporterCallbacks {
 
 - (NSData *) generateLiveReportWithThread: (thread_t) thread;
 - (NSData *) generateLiveReportWithThread: (thread_t) thread error: (NSError **) outError;
+- (NSData *) generateLiveReportWithThread: (thread_t) thread exception: (NSException *) exception error: (NSError **) outError;
 
 - (NSData *) generateLiveReport;
 - (NSData *) generateLiveReportAndReturnError: (NSError **) outError;
-
-- (NSData *) generateExceptionReport: (NSException *) exception error: (NSError **) outError;
+- (NSData *) generateLiveReportWithException: (NSException *) exception error: (NSError **) outError;
 
 - (BOOL) purgePendingCrashReport;
 - (BOOL) purgePendingCrashReportAndReturnError: (NSError **) outError;
@@ -137,6 +141,7 @@ typedef struct PLCrashReporterCallbacks {
 - (BOOL) enableCrashReporterAndReturnError: (NSError **) outError;
 
 - (void) setCrashCallbacks: (PLCrashReporterCallbacks *) callbacks;
+
 @end
 
 typedef NS_ENUM(NSUInteger, PLReportType)
