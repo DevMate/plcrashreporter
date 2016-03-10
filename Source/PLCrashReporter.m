@@ -687,6 +687,10 @@ static PLCrashReporter *sharedReporter = nil;
     if (_enabled)
         [NSException raise: PLCrashReporterException format: @"The crash reporter has alread been enabled"];
 
+    /* Create the directory tree */
+    if (![self populateCrashReportDirectoryAndReturnError: outError])
+        return NO;
+
     /*
      * Set up the signal handler context.
      */
