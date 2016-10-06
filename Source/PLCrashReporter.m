@@ -776,11 +776,19 @@ static PLCrashReporter *sharedReporter = nil;
     }
 
     /* Set the uncaught exception handler */
-    NSSetUncaughtExceptionHandler(&uncaught_exception_handler);
+    [self setupExceptionHandlerIfNeeded];
 
     /* Success */
     _enabled = YES;
     return YES;
+}
+
+- (void) setupExceptionHandlerIfNeeded
+{
+    if (NSGetUncaughtExceptionHandler() != &uncaught_exception_handler)
+    {
+        NSSetUncaughtExceptionHandler(&uncaught_exception_handler);
+    }
 }
 
 /**
