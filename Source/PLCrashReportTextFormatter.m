@@ -469,7 +469,7 @@ static NSString *uuidSeparator = @"-";
         NSString *possibleBundlePath = [[[[imageURL URLByDeletingLastPathComponent]
                                          URLByDeletingLastPathComponent] URLByDeletingLastPathComponent] path];
         
-        NSBundle *imageBundle = [NSBundle bundleWithPath:possibleBundlePath];
+        NSBundle *imageBundle = [[NSFileManager defaultManager] isReadableFileAtPath:possibleBundlePath] ? [NSBundle bundleWithPath:possibleBundlePath] : nil;
         
         if (nil == imageBundle || nil == imageBundle.bundleIdentifier)
         {
@@ -553,7 +553,7 @@ static NSString *uuidSeparator = @"-";
         imageBundlePath = [[[[imageURL URLByDeletingLastPathComponent]
                             URLByDeletingLastPathComponent] URLByDeletingLastPathComponent] path];
         
-        NSBundle *imageBundle = [NSBundle bundleWithPath:imageBundlePath];
+        NSBundle *imageBundle = [[NSFileManager defaultManager] isReadableFileAtPath:imageBundlePath] ? [NSBundle bundleWithPath:imageBundlePath] : nil;
         
         if (nil == imageBundle || nil == imageBundle.bundleIdentifier)
         {
